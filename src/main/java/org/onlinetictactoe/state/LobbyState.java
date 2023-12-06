@@ -22,6 +22,7 @@ public class LobbyState extends GameState {
 
     public static void updateOpponentName(String name) {
         player2.setText(name);
+        PlayState.player2.setText(name);
     }
 
     public static void startCountDown() {

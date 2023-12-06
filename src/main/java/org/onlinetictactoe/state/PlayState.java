@@ -11,7 +11,7 @@ public class PlayState extends GameState {
     private PauseState pauseState;
     public TicTacToe ticTacToe;
     private ArrayList<GameSquare> squares;
-    private JLabel player1, player2;
+    public static JLabel player1, player2;
     private boolean pause = false;
     private JPanel board;
 
@@ -25,12 +25,14 @@ public class PlayState extends GameState {
         squares = new ArrayList<>();
         initGrid();
         setup();
+        player1.setText(player.name);
     }
 
     public void reset() {
         ticTacToe = new TicTacToe();
         squares = new ArrayList<>();
         initGrid();
+        player1.setText(player.name);
     }
 
     public void setMark(char mark) {
