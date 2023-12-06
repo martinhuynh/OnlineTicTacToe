@@ -148,7 +148,7 @@ public class Server {
                 outputStream.writeObject(move);
             }
         } else if (request instanceof QuitMessage quitMessage) {
-            System.out.println("Received Move Message for lobby: " + quitMessage.lobbyId);
+            System.out.println("Received Quit Message for lobby: " + quitMessage.lobbyId);
             UUID lobbyId = quitMessage.lobbyId;
             removeLobby(lobbyId);
         }
@@ -165,16 +165,28 @@ public class Server {
                             if (object != null) handleRequest(object, socket);
                         }
                     } catch (Exception e) {}
-                    for (Map.Entry<UUID, ServerLobby> lobby: lobbies.entrySet()) {
-                        for (ServerPlayer player: lobby.getValue().players) {
+
+                    UUID lobbyToRemove = null;
+                    for (Map.Entry<UUID, ServerLobby> lobbyEntry : lobbies.entrySet()) {
+                        for (ServerPlayer player : lobbyEntry.getValue().players) {
                             if (player.socket == socket) {
-                                try {
-                                    removeLobby(lobby.getKey());
-                                } catch (Exception e) {}
-                                return;
+                                lobbyToRemove = lobbyEntry.getKey();
+                                break;
                             }
                         }
+                        if (lobbyToRemove != null) {
+                            break;
+                        }
                     }
+
+                    if (lobbyToRemove != null) {
+                        try {
+                            removeLobby(lobbyToRemove);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }).start();
             }
         } catch (Exception e) {
