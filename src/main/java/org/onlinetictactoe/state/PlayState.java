@@ -43,6 +43,12 @@ public class PlayState extends GameState {
         }
     }
 
+    private void toggleBoard(boolean state) {
+        for (GameSquare square : squares) {
+            square.setEnabled(state);
+        }
+    }
+
     public JPanel grid() {
         JPanel board = new JPanel();
         GridLayout layout = new GridLayout();
@@ -56,8 +62,11 @@ public class PlayState extends GameState {
                 if (!ticTacToe.makeMove(square.getPosX(), square.getPosY())) return;
                 square.setText("" + ticTacToe.getMark());
                 changePlayer();
-                boolean win = ticTacToe.checkForWin();
-                if (win) {
+                // Disable board
+                if (ticTacToe.isBoardFull()) {
+                    toggleBoard(false);
+                }
+                if (ticTacToe.checkForWin()) {
                     for (GameSquare s : squares) {
                         if (ticTacToe.winningSquare(s.getPosX(), s.getPosY())) {
                             s.setBackground(Color.YELLOW);
