@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class PlayState extends GameState {
     private PauseState pauseState;
-    public TicTacToe ticTacToe;
-    private ArrayList<GameSquare> squares = new ArrayList<>();
+    public static TicTacToe ticTacToe;
+    private static ArrayList<GameSquare> squares = new ArrayList<>();
     private JLabel player1, player2;
     private boolean pause = false;
 
@@ -21,6 +21,11 @@ public class PlayState extends GameState {
         pauseState = new PauseState(gsm);
         ticTacToe = new TicTacToe();
         setup();
+    }
+
+    public static void setMark(char mark) {
+        PlayState.mark = mark;
+        toggleBoard(mark == ticTacToe.getMark());
     }
 
     public void changePlayer() {
@@ -43,7 +48,7 @@ public class PlayState extends GameState {
         }
     }
 
-    private void toggleBoard(boolean state) {
+    private static void toggleBoard(boolean state) {
         for (GameSquare square : squares) {
             square.setEnabled(state);
         }
@@ -61,6 +66,7 @@ public class PlayState extends GameState {
             square.addActionListener(e -> {
                 if (!ticTacToe.makeMove(square.getPosX(), square.getPosY())) return;
                 square.setText("" + ticTacToe.getMark());
+                client.move(LobbyState.lobby.lobbyId, square.getPosX(), square.getPosY());
                 changePlayer();
                 // Disable board
                 if (ticTacToe.isBoardFull()) {

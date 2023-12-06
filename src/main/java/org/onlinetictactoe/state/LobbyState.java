@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LobbyState extends GameState {
-    private static Lobby lobby = null;
+    public static Lobby lobby = null;
     private static JLabel title = new JLabel();
     private static JLabel countdown = new JLabel();
 

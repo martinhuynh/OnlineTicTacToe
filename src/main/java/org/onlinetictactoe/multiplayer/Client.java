@@ -71,7 +71,7 @@ public class Client {
             MultiplayerState.lobbies = listLobbiesResponse.lobby;
             MultiplayerState.refreshLobbies();
         } else if (object instanceof StartGameMessage startGameMessage) {
-            PlayState.mark = startGameMessage.playerMark;
+            PlayState.setMark(startGameMessage.playerMark);
             startCountDown();
         } else if (object instanceof Move) {
         } else if (object instanceof QuitMessage) {
