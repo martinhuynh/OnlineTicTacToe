@@ -62,7 +62,11 @@ public class MenuState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 2;
-        JButton b3 = new JButton("Button 3");
+        JButton b3 = new JButton("Quit");
+        b3.addActionListener(e -> {
+//            gsm.setState(GameStateManager.State.PLAY);
+            System.exit(1);
+        });
         add(b3, gbc);
 
         gbc.fill = GridBagConstraints.VERTICAL;
