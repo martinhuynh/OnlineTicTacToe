@@ -4,18 +4,17 @@ import org.onlinetictactoe.game.TicTacToe;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class PlayState extends GameState {
     private PauseState pauseState;
-    private TicTacToe ticTacToe;
+    public TicTacToe ticTacToe;
     private ArrayList<GameSquare> squares = new ArrayList<>();
     private JLabel player1, player2;
     private boolean pause = false;
+
+    public static char mark;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
@@ -25,6 +24,7 @@ public class PlayState extends GameState {
     }
 
     public void changePlayer() {
+        toggleBoard(mark == ticTacToe.getMark());
         ticTacToe.changePlayer();
         highlight(ticTacToe.getMark());
     }

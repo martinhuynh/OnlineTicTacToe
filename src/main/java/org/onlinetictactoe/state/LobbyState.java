@@ -17,10 +17,9 @@ public class LobbyState extends GameState {
         LobbyState.lobby = lobby;
         title.setText("Lobby Name: " + lobby.lobbyName);
         client.joinLobby(lobby.lobbyId);
-        startCountDown();
     }
 
-    private static void startCountDown() {
+    public static void startCountDown() {
         new Thread(() -> {
             for (int i = 3; i >= 0; i--) {
                 countdown.setText("Starting in " + i);

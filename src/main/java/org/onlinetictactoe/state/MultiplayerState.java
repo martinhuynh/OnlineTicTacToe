@@ -7,14 +7,13 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MultiplayerState extends GameState {
-    private ArrayList<Lobby> lobbies = new ArrayList<>();
+    public static ArrayList<Lobby> lobbies = new ArrayList<>();
     private static int hoverDegree = 30;
     private static int clickDegree = 50;
     private static Color defaultColor = Color.green, hoverColor, clickColor;
-    private JPanel innerContainer = new JPanel();
+    private static JPanel innerContainer = new JPanel();
     public MultiplayerState(GameStateManager gsm) {
         super(gsm);
-        addRandomLobbies();
         calculateColors();
         setup();
         pollLobbies();
@@ -24,7 +23,7 @@ public class MultiplayerState extends GameState {
         new Thread(() -> {
             while (true) {
                 try {
-                    lobbies = client.listLobbies();
+                    client.listLobbies();
                     refreshLobbies();
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -34,7 +33,7 @@ public class MultiplayerState extends GameState {
         }).start();
     }
 
-    private void refreshLobbies() {
+    public static void refreshLobbies() {
         innerContainer.removeAll();
         innerContainer.revalidate();
         GridBagLayout layout = new GridBagLayout();
@@ -204,7 +203,7 @@ public class MultiplayerState extends GameState {
         add(returnLobby, gbc);
     }
 
-    public JPanel createLobbyPanel(Lobby lobby) {
+    public static JPanel createLobbyPanel(Lobby lobby) {
         JPanel container = new JPanel();
         container.addMouseListener(new MouseAdapter() {
             @Override

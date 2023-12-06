@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Random;
 
 public class Server {
+    ArrayList<ServerPlayer> clients;
 
     public class ServerLobby {
         public ServerPlayer currentMove;
@@ -41,10 +42,11 @@ public class Server {
     public class ServerPlayer {
         public Socket socket;
         public Player player;
+        public ObjectOutputStream outputStream;
 
-        ServerPlayer(Socket socket, Player player) {
+        ServerPlayer(Socket socket, ObjectOutputStream outputStream) {
             this.socket = socket;
-            this.player = player;
+            this.outputStream = outputStream;
         }
     }
 
@@ -53,6 +55,7 @@ public class Server {
 
     public Server(int port) {
         lobbies = new ConcurrentHashMap<>();
+        clients = new ArrayList<>();
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -64,7 +67,7 @@ public class Server {
         lobbies.put(id, new ServerLobby(new ArrayList<>(), lobbyName, maxPlayers));
     }
 
-    private boolean joinLobby(Socket client, JoinLobbyRequest joinLobbyRequest) {
+    private boolean joinLobby(ServerPlayer client, JoinLobbyRequest joinLobbyRequest) {
         if (!lobbies.containsKey(joinLobbyRequest.lobbyId)) {
             return false;
         }
@@ -73,38 +76,68 @@ public class Server {
         }
 
         ServerLobby serverLobby = lobbies.get(joinLobbyRequest.lobbyId);
-        serverLobby.players.add(new ServerPlayer(client, joinLobbyRequest.player));
+        serverLobby.players.add(client);
         return true;
     }
 
-    private void removeLobby(UUID lobbyId) {
-        for (ServerPlayer player: lobbies.get(lobbyId).players) {
+    private void removeLobby(QuitMessage quitMessage) {
+        for (ServerPlayer player: lobbies.get(quitMessage.lobbyId).players) {
+            if (player.player.id == quitMessage.player.id) {
+                continue;
+            }
             try {
                 ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-                outputStream.writeObject(new QuitMessage(lobbyId, player.player));
-            } catch (Exception e) {}
+                outputStream.writeObject(new QuitMessage(quitMessage.lobbyId, player.player));
+                outputStream.flush();
+            } catch (Exception ignored) {}
         }
-        lobbies.remove(lobbyId);
+        lobbies.remove(quitMessage.lobbyId);
     }
 
-    private void handleRequest(Object request, Socket client) throws IOException {
+    private void startGame(ServerPlayer client, ServerLobby lobby) throws IOException {
+        if (lobby.readyPlayers == lobby.maxPlayers) {
+            System.out.println("Starting Lobby");
+            Random rand = new Random();
+            boolean firstPlayerX = rand.nextBoolean();
+            ServerPlayer player1 = lobby.players.get(0);
+            ServerPlayer player2 = lobby.players.get(1);
+
+            for (int i = 0; i < lobby.players.size(); i++) {
+                ServerPlayer serverPlayer = lobby.players.get(i);
+                char playerSymbol = firstPlayerX ? 'X' : 'O';
+                ObjectOutputStream outputStream = new ObjectOutputStream(serverPlayer.socket.getOutputStream());
+                if (i == 0) {
+                    outputStream.writeObject(new StartGameMessage(playerSymbol, player2.player.name));
+                } else {
+                    outputStream.writeObject(new StartGameMessage(playerSymbol, player1.player.name));
+                }
+                client.outputStream.flush();
+            }
+        }
+    }
+
+    private void handleRequest(Object request, ServerPlayer client) throws IOException {
         if (request instanceof JoinLobbyRequest joinLobby) {
             System.out.println("Received Join Request on Lobby: " + joinLobby.lobbyId);
             boolean successfulJoin = joinLobby(client, joinLobby);
             if (!successfulJoin) {
-                ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
-                outputStream.writeObject(null);
+                client.outputStream.writeObject(new JoinLobbyResponse(false));
+                client.outputStream.flush();
                 return;
             }
-            ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
-            outputStream.writeObject(joinLobby.lobbyId);
+            client.player = joinLobby.player;
+            startGame(client, lobbies.get(joinLobby.lobbyId));
+            client.outputStream.writeObject(new JoinLobbyResponse(true));
+            client.outputStream.flush();
         } else if (request instanceof CreateLobbyRequest createLobby) {
             System.out.println("Received Create Request");
             createLobby(createLobby.lobbyId, createLobby.lobbyName, createLobby.maxPlayers);
-            lobbies.get(createLobby.lobbyId).players.add(new ServerPlayer(client, createLobby.player));
-            ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
-            outputStream.writeObject(null);
+            lobbies.get(createLobby.lobbyId).players.add(client);
+            client.outputStream.writeObject(null);
+            client.outputStream.flush();
         } else if (request instanceof ListLobbiesRequest) {
+            System.out.println("Received List Lobbies Request");
+
             ArrayList<Lobby> listOfLobbies = new ArrayList<>();
             for (Map.Entry<UUID, ServerLobby> pair : lobbies.entrySet()) {
                 UUID id = pair.getKey();
@@ -113,46 +146,36 @@ public class Server {
                 listOfLobbies.add(lobby);
             }
             ListLobbiesResponse response = new ListLobbiesResponse(listOfLobbies);
-            ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
-            outputStream.writeObject(response);
+            client.outputStream.writeObject(response);
+            client.outputStream.flush();
         } else if (request instanceof ReadyMessage readyMessage) {
             System.out.println("Received Ready Message for lobby: " + readyMessage.lobbyId);
             ServerLobby lobby = lobbies.get(readyMessage.lobbyId);
             lobby.readyPlayers += 1;
-            if (lobby.readyPlayers == lobby.maxPlayers) {
-                Random rand = new Random();
-                boolean firstPlayerX = rand.nextBoolean();
-                for (int i = 0; i < lobby.players.size(); i++) {
-                    ServerPlayer serverPlayer = lobby.players.get(i);
-                    char playerSymbol = firstPlayerX ? 'X' : 'O';
-                    ObjectOutputStream outputStream = new ObjectOutputStream(serverPlayer.socket.getOutputStream());
-                    outputStream.writeObject(new StartGameMessage(playerSymbol, serverPlayer.player.name));
-                }
-            }
+            startGame(client, lobby);
         } else if (request instanceof Move move) {
             System.out.println("Received Move Message for lobby: " + move.lobbyId);
             UUID lobbyId = move.lobbyId;
             // confirm move is by right player
             if (move.player.id != lobbies.get(lobbyId).currentMove.player.id) {
-                ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
-                outputStream.writeObject(null);
+                client.outputStream.writeObject(null);
+                client.outputStream.flush();
                 return;
             }
             // send sender back nothing adn forward move to other player
             for (ServerPlayer player: lobbies.get(lobbyId).players) {
-                if (player.socket == client) {
-                    ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-                    outputStream.writeObject(null);
+                if (player == client) {
+                    client.outputStream.writeObject(null);
+                    client.outputStream.flush();
                     continue;
                 }
                 lobbies.get(lobbyId).currentMove = player;
-                ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-                outputStream.writeObject(move);
+                client.outputStream.writeObject(move);
+                client.outputStream.flush();
             }
         } else if (request instanceof QuitMessage quitMessage) {
             System.out.println("Received Quit Message for lobby: " + quitMessage.lobbyId);
-            UUID lobbyId = quitMessage.lobbyId;
-            removeLobby(lobbyId);
+            removeLobby(quitMessage);
         }
     }
 
@@ -161,12 +184,25 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 new Thread(() -> {
+                    ServerPlayer serverPlayer;
+                    ObjectInputStream inputStream = null;
+                    ObjectOutputStream outputStream = null;
+                    try {
+                        inputStream = new ObjectInputStream(socket.getInputStream());
+                        outputStream = new ObjectOutputStream(socket.getOutputStream());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    serverPlayer = new ServerPlayer(socket, outputStream);
+                    clients.add(serverPlayer);
                     try {
                         while (socket.isConnected()) {
-                            Object object = new ObjectInputStream(socket.getInputStream()).readObject();
-                            if (object != null) handleRequest(object, socket);
+                            Object object = inputStream.readObject();
+                            if (object != null) handleRequest(object, serverPlayer);
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                     UUID lobbyToRemove = null;
                     for (Map.Entry<UUID, ServerLobby> lobbyEntry : lobbies.entrySet()) {
@@ -182,7 +218,7 @@ public class Server {
                     }
 
                     if (lobbyToRemove != null) {
-                        removeLobby(lobbyToRemove);
+                        removeLobby(new QuitMessage(lobbyToRemove, serverPlayer.player));
                     }
 
                 }).start();

@@ -2,74 +2,98 @@ package org.onlinetictactoe.multiplayer;
 
 import org.onlinetictactoe.multiplayer.messages.*;
 import org.onlinetictactoe.player.Player;
-import org.onlinetictactoe.state.Lobby;
+import org.onlinetictactoe.state.MultiplayerState;
+import org.onlinetictactoe.state.PlayState;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.UUID;
+
+import static org.onlinetictactoe.state.LobbyState.startCountDown;
 
 public class Client {
     private Socket serverSocket;
+
+    private ObjectOutputStream outputStream;
+
+    private ObjectInputStream inputStream;
+
     private Player player;
 
     public Client(String serverIp, int serverPort, Player player) {
         try {
             this.serverSocket = new Socket(serverIp, serverPort);
+            this.outputStream = new ObjectOutputStream(serverSocket.getOutputStream());
+            this.inputStream = new ObjectInputStream(serverSocket.getInputStream());
             this.player = player;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Object sendRevMsg(Object message) {
+    private void sendMsg(Object message) {
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(serverSocket.getOutputStream());
-            objectOutputStream.writeObject(message);
-
-            ObjectInputStream objectInputStream = new ObjectInputStream(serverSocket.getInputStream());
-            return objectInputStream.readObject();
+            outputStream.writeObject(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    public UUID joinLobby(UUID lobbyId) {
+    public void joinLobby(UUID lobbyId) {
         JoinLobbyRequest joinLobbyRequest = new JoinLobbyRequest(lobbyId, player);
-        return (UUID) sendRevMsg(joinLobbyRequest);
+        sendMsg(joinLobbyRequest);
     }
 
-    public ArrayList<Lobby> listLobbies() {
+    public void listLobbies() {
         ListLobbiesRequest listLobbiesRequest = new ListLobbiesRequest(player);
-        ListLobbiesResponse response = (ListLobbiesResponse) sendRevMsg(listLobbiesRequest);
-        return response.lobby;
+        sendMsg(listLobbiesRequest);
     }
 
-    public Lobby createLobby(UUID lobbyId, String lobbyName) {
+    public void createLobby(UUID lobbyId, String lobbyName) {
         CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyName, lobbyId, 2, player);
-        return (Lobby) sendRevMsg(createLobbyRequest);
+        sendMsg(createLobbyRequest);
     }
 
-    public boolean move(UUID lobbyId, int x, int y) {
-        return false;
+    public void move(UUID lobbyId, int x, int y) {
+        Move moveRequest = new Move(lobbyId, x, y, player);
+        sendMsg(moveRequest);
     }
 
     public void quit(UUID lobbyId) {
-        sendRevMsg(new QuitMessage(lobbyId, player));
+        sendMsg(new QuitMessage(lobbyId, player));
     }
 
-    public static void main(String[] args) {
-        Player player = new Player("Old Man", UUID.randomUUID());
-        Client client = new Client("73.118.226.57", 4001, player);
-        ArrayList<Lobby> lobbies =  client.listLobbies();
-        for (Lobby lobby : lobbies) {
-            if (lobby == null) {
-                continue;
-            }
-            System.out.println(lobby.lobbyId);
+    public void handleRequest(Object object) {
+        if (object instanceof JoinLobbyResponse joinLobbyResponse) {
+        } else if (object instanceof ListLobbiesResponse listLobbiesResponse) {
+            MultiplayerState.lobbies = listLobbiesResponse.lobby;
+            MultiplayerState.refreshLobbies();
+        } else if (object instanceof StartGameMessage startGameMessage) {
+            PlayState.mark = startGameMessage.playerMark;
+            startCountDown();
+        } else if (object instanceof Move) {
+        } else if (object instanceof QuitMessage) {
         }
-        client.joinLobby(lobbies.get(0).lobbyId);
+
+    }
+
+    public void start() {
+        try {
+            new Thread(() -> {
+                while (serverSocket.isConnected()) {
+                    Object object = null;
+                    try {
+                        object = inputStream.readObject();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (object != null) handleRequest(object);
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
