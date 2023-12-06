@@ -187,6 +187,8 @@ public class Server {
 
                 }).start();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
