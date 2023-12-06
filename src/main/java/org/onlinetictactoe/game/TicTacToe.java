@@ -11,6 +11,10 @@ public class TicTacToe {
         initializeBoard();
     }
 
+    public char getMark() {
+        return currentPlayerMark;
+    }
+
     private void initializeBoard() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
@@ -58,23 +62,39 @@ public class TicTacToe {
     private boolean checkRowsForWin() {
         for (int i = 0; i < SIZE; i++) {
             if (checkRowCol(board[i][0], board[i][1], board[i][2])) {
+                board[i][0] = board[i][1] = board[i][2] = 'W';
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean winningSquare(int x, int y) {
+        return (board[x][y] == 'W');
     }
 
     private boolean checkColumnsForWin() {
         for (int i = 0; i < SIZE; i++) {
             if (checkRowCol(board[0][i], board[1][i], board[2][i])) {
+                board[0][i] = board[1][i] = board[2][i] = 'W';
                 return true;
             }
         }
         return false;
     }
 
+
+
     private boolean checkDiagonalsForWin() {
-        return ((checkRowCol(board[0][0], board[1][1], board[2][2])) || (checkRowCol(board[0][2], board[1][1], board[2][0])));
+        if (checkRowCol(board[0][0], board[1][1], board[2][2])) {
+            board[0][0] = board[1][1] = board[2][2] = 'W';
+            return true;
+        }
+        if (checkRowCol(board[0][2], board[1][1], board[2][0])) {
+            board[0][2] = board[1][1] = board[2][0] = 'W';
+            return true;
+        }
+        return false;
     }
 
     private boolean checkRowCol(char c1, char c2, char c3) {
