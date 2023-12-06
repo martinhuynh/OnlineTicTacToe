@@ -14,7 +14,7 @@ public class Client {
     private Socket serverSocket;
     private Player player;
 
-    Client(String serverIp, int serverPort, Player player) {
+    public Client(String serverIp, int serverPort, Player player) {
         try {
             this.serverSocket = new Socket(serverIp, serverPort);
             this.player = player;

@@ -3,20 +3,60 @@ package org.onlinetictactoe.state;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import org.onlinetictactoe.state.Lobby;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class MultiplayerState extends GameState {
     private ArrayList<Lobby> lobbies = new ArrayList<>();
-    private static int hoverDegree = 35;
-    private static int clickDegree = 15;
-    private JPanel innerContainer;
+    private static int hoverDegree = 30;
+    private static int clickDegree = 50;
+    private static Color defaultColor = Color.green, hoverColor, clickColor;
+    private JPanel innerContainer = new JPanel();
     public MultiplayerState(GameStateManager gsm) {
         super(gsm);
         addRandomLobbies();
-//        setup();
-        setup2();
+        calculateColors();
+        setup();
+        pollLobbies();
+    }
+
+    private void pollLobbies() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    refreshLobbies();
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+    private void refreshLobbies() {
+        lobbies = client.listLobbies();
+        innerContainer.removeAll();
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        innerContainer.setBackground(Color.CYAN);
+        innerContainer.setLayout(layout);
+        gbc.weighty = 0;
+        gbc.weightx = 1;
+        gbc.ipady = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        for(int i = 0; i < lobbies.size(); i++) {
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            JPanel container = createLobbyPanel(lobbies.get(i));
+//            lobbyContainers.add(container);
+            innerContainer.add(container, gbc);
+            innerContainer.revalidate();
+        }
+    }
+
+    private void tempTestCreateLobbies() {
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -49,25 +89,32 @@ public class MultiplayerState extends GameState {
         });
     }
 
-    private void setup2() {
+    private void calculateColors() {
+        hoverColor = darker(defaultColor, hoverDegree);
+        clickColor = darker(defaultColor, clickDegree);
+    }
+
+    private void setup() {
         setBackground(Color.RED);
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
-
-        innerContainer = new JPanel();
-        innerContainer.setBackground(Color.CYAN);
-        innerContainer.setLayout(layout);
-        gbc.weighty = 0;
-        gbc.weightx = 1;
-        gbc.ipady = 0;
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        for(int i = 0; i < lobbies.size(); i++) {
-            gbc.gridx = 0;
-            gbc.gridy = i;
-            innerContainer.add(createLobbyPanel(lobbies.get(i)), gbc);
-        }
+//
+//        innerContainer = new JPanel();
+//        innerContainer.setBackground(Color.CYAN);
+//        innerContainer.setLayout(layout);
+//        gbc.weighty = 0;
+//        gbc.weightx = 1;
+//        gbc.ipady = 0;
+//        gbc.anchor = GridBagConstraints.NORTH;
+//        gbc.fill = GridBagConstraints.HORIZONTAL;
+//        for(int i = 0; i < lobbies.size(); i++) {
+//            gbc.gridx = 0;
+//            gbc.gridy = i;
+//            JPanel container = createLobbyPanel(lobbies.get(i));
+//            lobbyContainers.add(container);
+//            innerContainer.add(container, gbc);
+//        }
         JPanel outerContainer = new JPanel();
         outerContainer.setLayout(layout);
 
@@ -133,8 +180,10 @@ public class MultiplayerState extends GameState {
         gbc.ipady = 5;
         gbc.insets = new Insets(0, 0, 60, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        JButton lobby = new JButton("Create Lobby");
-        lobby.addActionListener(e -> gsm.setState(GameStateManager.State.CREATE_LOBBY));
+        JButton lobby = new JButton("Refresh");
+
+        // Create Lobby action
+//        lobby.addActionListener(e -> gsm.setState(GameStateManager.State.CREATE_LOBBY));
         lobby.setFont(font2);
         add(lobby, gbc);
 
@@ -154,34 +203,12 @@ public class MultiplayerState extends GameState {
         add(returnLobby, gbc);
     }
 
-    private void setup() {
-        setBackground(Color.RED);
-
-        innerContainer = new JPanel();
-        innerContainer.setLayout(new BoxLayout(innerContainer, BoxLayout.Y_AXIS));
-
-        for(int i = 0; i < lobbies.size(); i++) {
-            innerContainer.add(createLobbyPanel(lobbies.get(i)));
-        }
-
-        JPanel outerContainer = new JPanel();
-        outerContainer.add(innerContainer);
-
-        JScrollPane scrollPane = new JScrollPane(outerContainer);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        setLayout(new BorderLayout());
-
-        add(scrollPane, BorderLayout.CENTER);
-    }
-
     public JPanel createLobbyPanel(Lobby lobby) {
         JPanel container = new JPanel();
         container.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     System.out.println(lobby.lobbyName + " clicked");
                     gsm.setState(GameStateManager.State.LOBBY);
@@ -189,15 +216,24 @@ public class MultiplayerState extends GameState {
             }
 
             @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    System.out.println(lobby.lobbyName + " pressed");
+                    container.setBackground(clickColor);
+                }
+            }
+
+            @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
-                container.setBackground(darker(container.getBackground(), hoverDegree));
+                container.setBackground(hoverColor);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
-                container.setBackground(lighter(container.getBackground(), hoverDegree));
+                container.setBackground(defaultColor);
             }
         });
         container.setMaximumSize(new Dimension(1000, 30));
