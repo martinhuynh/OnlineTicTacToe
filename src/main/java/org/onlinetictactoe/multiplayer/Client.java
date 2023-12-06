@@ -78,7 +78,8 @@ public class Client {
         } else if (object instanceof StartGameMessage startGameMessage) {
             playState.setMark(startGameMessage.playerMark);
             startCountDown();
-        } else if (object instanceof Move) {
+        } else if (object instanceof Move move) {
+            playState.makeMove(move.x, move.y);
         } else if (object instanceof QuitMessage) {
         }
 
