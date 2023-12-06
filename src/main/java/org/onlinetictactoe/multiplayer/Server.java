@@ -141,6 +141,7 @@ public class Server {
                 ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
                 outputStream.writeObject(quitMessage);
             }
+            lobbies.remove(lobbyId);
         }
     }
 
@@ -153,6 +154,15 @@ public class Server {
                         while (socket.isConnected()) {
                             Object object = new ObjectInputStream(socket.getInputStream()).readObject();
                             if (object != null) handleRequest(object, socket);
+                        }
+                        outerLoop:
+                        for (Map.Entry<UUID, ServerLobby> lobby: lobbies.entrySet()) {
+                            for (ServerPlayer player: lobby.getValue().players) {
+                                if (player.socket == socket) {
+                                    lobbies.remove(lobby.getKey());
+                                    break outerLoop;
+                                }
+                            }
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
