@@ -155,17 +155,14 @@ public class Server {
                             Object object = new ObjectInputStream(socket.getInputStream()).readObject();
                             if (object != null) handleRequest(object, socket);
                         }
-                        outerLoop:
-                        for (Map.Entry<UUID, ServerLobby> lobby: lobbies.entrySet()) {
-                            for (ServerPlayer player: lobby.getValue().players) {
-                                if (player.socket == socket) {
-                                    lobbies.remove(lobby.getKey());
-                                    break outerLoop;
-                                }
+                    } catch (Exception e) {}
+                    for (Map.Entry<UUID, ServerLobby> lobby: lobbies.entrySet()) {
+                        for (ServerPlayer player: lobby.getValue().players) {
+                            if (player.socket == socket) {
+                                lobbies.remove(lobby.getKey());
+                                return;
                             }
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }).start();
             }
