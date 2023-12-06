@@ -3,21 +3,11 @@ package org.onlinetictactoe.state;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import org.onlinetictactoe.state.Lobby;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MultiplayerState extends GameState {
-    private class Lobby {
-        public Lobby(String lobbyName, int numberOfPlayers, int maxPlayers) {
-            this.lobbyName = lobbyName;
-            this.numberOfPlayers = numberOfPlayers;
-            this.maxPlayers = maxPlayers;
-        }
-
-        public String lobbyName;
-        public int numberOfPlayers;
-        public int maxPlayers;
-    }
-
     private ArrayList<Lobby> lobbies = new ArrayList<>();
     private static int hoverDegree = 35;
     private static int clickDegree = 15;
@@ -44,7 +34,8 @@ public class MultiplayerState extends GameState {
                     gbc.ipady = 0;
                     gbc.anchor = GridBagConstraints.NORTH;
                     gbc.fill = GridBagConstraints.HORIZONTAL;
-                    lobbies.add(new Lobby("Added", 0, 2));
+                    UUID uuid = UUID.randomUUID();
+                    lobbies.add(new Lobby("Added", uuid,0, 2));
 
                     innerContainer.add(createLobbyPanel(lobbies.get(lobbies.size() - 1)), gbc);
                     innerContainer.revalidate();
@@ -294,7 +285,7 @@ public class MultiplayerState extends GameState {
     public Lobby randomLobby(int num) {
         int n1 = (int) (Math.random() * 10);
         int n2 = (int) (Math.random() * 10);
-        Lobby temp = new Lobby("Lobby " + ++num, n1, 10);
+        Lobby temp = new Lobby("Lobby " + ++num, UUID.randomUUID(), n1,  10);
         return temp;
     }
 }
