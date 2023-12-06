@@ -30,8 +30,8 @@ public class PlayState extends GameState {
     }
 
     public void changePlayer() {
-        toggleBoard(mark == ticTacToe.getMark());
         ticTacToe.changePlayer();
+        toggleBoard(mark == ticTacToe.getMark());
         highlight(ticTacToe.getMark());
     }
 
@@ -55,6 +55,32 @@ public class PlayState extends GameState {
         }
     }
 
+    public boolean makeMove(int x, int y) {
+        GameSquare square = squares.get(x * 3 + y);
+        return makeMove(square);
+    }
+
+    public boolean makeMove (GameSquare square) {
+        if (!ticTacToe.makeMove(square.getPosX(), square.getPosY())) return false;
+        square.setText("" + ticTacToe.getMark());
+
+        changePlayer();
+        // Disable board
+        if (ticTacToe.isBoardFull()) {
+            toggleBoard(false);
+        }
+        if (ticTacToe.checkForWin()) {
+            for (GameSquare s : squares) {
+                if (ticTacToe.winningSquare(s.getPosX(), s.getPosY())) {
+                    s.setBackground(Color.YELLOW);
+                }
+                s.setEnabled(false);
+                highlight('P');
+            }
+        }
+        return true;
+    }
+
     public JPanel grid() {
         JPanel board = new JPanel();
         GridLayout layout = new GridLayout();
@@ -65,23 +91,8 @@ public class PlayState extends GameState {
             GameSquare square = new GameSquare(i/3, i%3);
             squares.add(square);
             square.addActionListener(e -> {
-                if (!ticTacToe.makeMove(square.getPosX(), square.getPosY())) return;
-                square.setText("" + ticTacToe.getMark());
+                if (!makeMove(square)) return;
                 client.move(LobbyState.lobby.lobbyId, square.getPosX(), square.getPosY());
-                changePlayer();
-                // Disable board
-                if (ticTacToe.isBoardFull()) {
-                    toggleBoard(false);
-                }
-                if (ticTacToe.checkForWin()) {
-                    for (GameSquare s : squares) {
-                        if (ticTacToe.winningSquare(s.getPosX(), s.getPosY())) {
-                            s.setBackground(Color.YELLOW);
-                        }
-                        s.setEnabled(false);
-                        highlight('P');
-                    }
-                }
             });
             square.setFont(new Font("Arial", Font.BOLD, 100));
             square.setBackground(Color.WHITE);
