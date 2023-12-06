@@ -7,6 +7,7 @@ public class LobbyState extends GameState {
     public static Lobby lobby = null;
     private static JLabel title = new JLabel();
     private static JLabel countdown = new JLabel();
+    private static JLabel player1, player2;
 
     public LobbyState(GameStateManager gsm) {
         super(gsm);
@@ -17,6 +18,10 @@ public class LobbyState extends GameState {
         LobbyState.lobby = lobby;
         title.setText("Lobby Name: " + lobby.lobbyName);
         client.joinLobby(lobby.lobbyId);
+    }
+
+    public static void updateOpponentName(String name) {
+        player2.setText(name);
     }
 
     public static void startCountDown() {
@@ -71,7 +76,7 @@ public class LobbyState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 1;
-        JLabel player1 = new JLabel("player1");
+        player1 = new JLabel("player1");
         player1.setHorizontalAlignment(JLabel.CENTER);
         player1.setFont(font);
         add(player1, gbc);
@@ -85,10 +90,10 @@ public class LobbyState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 2;
-        JLabel player2 = new JLabel("VS");
-        player2.setHorizontalAlignment(JLabel.CENTER);
-        player2.setFont(font);
-        add(player2, gbc);
+        JLabel vs = new JLabel("VS");
+        vs.setHorizontalAlignment(JLabel.CENTER);
+        vs.setFont(font);
+        add(vs, gbc);
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -99,10 +104,10 @@ public class LobbyState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 3;
-        JLabel vs = new JLabel("player2");
-        vs.setHorizontalAlignment(JLabel.CENTER);
-        vs.setFont(font);
-        add(vs, gbc);
+        player2 = new JLabel("player2");
+        player2.setHorizontalAlignment(JLabel.CENTER);
+        player2.setFont(font);
+        add(player2, gbc);
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -139,6 +144,7 @@ public class LobbyState extends GameState {
 
     @Override
     public void update() {
+        player1.setText(player.name);
         countdown.setText("Waiting for player to join");
     }
 }

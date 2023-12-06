@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.UUID;
 
 import static org.onlinetictactoe.state.LobbyState.startCountDown;
+import static org.onlinetictactoe.state.LobbyState.updateOpponentName;
 
 public class Client {
     private Socket serverSocket;
@@ -77,6 +78,7 @@ public class Client {
             MultiplayerState.refreshLobbies();
         } else if (object instanceof StartGameMessage startGameMessage) {
             playState.setMark(startGameMessage.playerMark);
+            updateOpponentName(startGameMessage.opponentName);
             startCountDown();
         } else if (object instanceof Move move) {
             playState.makeMove(move.x, move.y);

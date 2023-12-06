@@ -68,7 +68,7 @@ public class PauseState extends GameState {
         JButton b3 = new JButton("Quit game");
         b3.addActionListener(e -> {
             gsm.setState(GameStateManager.State.MULTIPLAYER);
-            // Quit game
+            client.quit(LobbyState.lobby.lobbyId);
         });
         add(b3, gbc);
 
