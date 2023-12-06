@@ -154,16 +154,18 @@ public class PlayState extends GameState {
     @Override
     public void escape() {
         pause = !pause;
-        pauseState.setVisible(pause);
-        getRootPane().
+        if (pause) {
+            gsm.setState(GameStateManager.State.PAUSE);
+        } else {
+            gsm.setState(GameStateManager.State.PLAY);
+        }
         validate();
         repaint();
-
         System.out.println(pause);
     }
 
     @Override
     public void update() {
-
+        pause = false;
     }
 }
