@@ -77,10 +77,12 @@ public class Server {
         return true;
     }
 
-    private void removeLobby(UUID lobbyId) throws IOException {
+    private void removeLobby(UUID lobbyId) {
         for (ServerPlayer player: lobbies.get(lobbyId).players) {
-            ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-            outputStream.writeObject(new QuitMessage(lobbyId, player.player));
+            try {
+                ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
+                outputStream.writeObject(new QuitMessage(lobbyId, player.player));
+            } catch (Exception e) {}
         }
         lobbies.remove(lobbyId);
     }
@@ -180,17 +182,11 @@ public class Server {
                     }
 
                     if (lobbyToRemove != null) {
-                        try {
-                            removeLobby(lobbyToRemove);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        removeLobby(lobbyToRemove);
                     }
 
                 }).start();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
