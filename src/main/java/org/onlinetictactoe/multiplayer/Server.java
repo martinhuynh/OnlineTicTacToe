@@ -86,9 +86,8 @@ public class Server {
                 continue;
             }
             try {
-                ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-                outputStream.writeObject(new QuitMessage(quitMessage.lobbyId, player.player));
-                outputStream.flush();
+                player.outputStream.writeObject(new QuitMessage(quitMessage.lobbyId, player.player));
+                player.outputStream.flush();
             } catch (Exception ignored) {}
         }
         lobbies.remove(quitMessage.lobbyId);
@@ -163,8 +162,6 @@ public class Server {
             // send sender back nothing adn forward move to other player
             for (ServerPlayer player: lobbies.get(lobbyId).players) {
                 if (player == client) {
-                    client.outputStream.writeObject(null);
-                    client.outputStream.flush();
                     continue;
                 }
                 lobbies.get(lobbyId).currentMove = player;
