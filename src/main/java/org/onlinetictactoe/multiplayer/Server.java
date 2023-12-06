@@ -77,6 +77,14 @@ public class Server {
         return true;
     }
 
+    private void removeLobby(UUID lobbyId) throws IOException {
+        for (ServerPlayer player: lobbies.get(lobbyId).players) {
+            ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
+            outputStream.writeObject(new QuitMessage(lobbyId, player.player));
+        }
+        lobbies.remove(lobbyId);
+    }
+
     private void handleRequest(Object request, Socket client) throws IOException {
         if (request instanceof JoinLobbyRequest joinLobby) {
             boolean successfulJoin = joinLobby(client, joinLobby);
@@ -159,7 +167,9 @@ public class Server {
                     for (Map.Entry<UUID, ServerLobby> lobby: lobbies.entrySet()) {
                         for (ServerPlayer player: lobby.getValue().players) {
                             if (player.socket == socket) {
-                                lobbies.remove(lobby.getKey());
+                                try {
+                                    removeLobby(lobby.getKey());
+                                } catch (Exception e) {}
                                 return;
                             }
                         }

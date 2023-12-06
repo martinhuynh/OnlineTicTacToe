@@ -36,9 +36,9 @@ public class Client {
         return null;
     }
 
-    public Lobby joinLobby(UUID lobbyId) {
+    public UUID joinLobby(UUID lobbyId) {
         JoinLobbyRequest joinLobbyRequest = new JoinLobbyRequest(lobbyId, player);
-        return (Lobby) sendRevMsg(joinLobbyRequest);
+        return (UUID) sendRevMsg(joinLobbyRequest);
     }
 
     public ArrayList<Lobby> listLobbies() {
@@ -70,5 +70,6 @@ public class Client {
             }
             System.out.println(lobby.lobbyId);
         }
+        client.joinLobby(lobbies.get(0).lobbyId);
     }
 }
