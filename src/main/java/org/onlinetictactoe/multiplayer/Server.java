@@ -94,7 +94,7 @@ public class Server {
         lobbies.remove(quitMessage.lobbyId);
     }
 
-    private void startGame(ServerPlayer client, ServerLobby lobby) throws IOException {
+    private void startGame(ServerLobby lobby) throws IOException {
         if (lobby.players.size() == lobby.maxPlayers) {
             System.out.println("Starting Lobby");
             Random rand = new Random();
@@ -105,13 +105,12 @@ public class Server {
             for (int i = 0; i < lobby.players.size(); i++) {
                 ServerPlayer serverPlayer = lobby.players.get(i);
                 char playerSymbol = firstPlayerX ? 'X' : 'O';
-                ObjectOutputStream outputStream = new ObjectOutputStream(serverPlayer.socket.getOutputStream());
                 if (i == 0) {
-                    outputStream.writeObject(new StartGameMessage(playerSymbol, player2.player.name));
+                    serverPlayer.outputStream.writeObject(new StartGameMessage(playerSymbol, player2.player.name));
                 } else {
-                    outputStream.writeObject(new StartGameMessage(playerSymbol, player1.player.name));
+                    serverPlayer.outputStream.writeObject(new StartGameMessage(playerSymbol, player1.player.name));
                 }
-                client.outputStream.flush();
+                serverPlayer.outputStream.flush();
             }
         }
     }
@@ -126,7 +125,7 @@ public class Server {
                 return;
             }
             client.player = joinLobby.player;
-            startGame(client, lobbies.get(joinLobby.lobbyId));
+            startGame(lobbies.get(joinLobby.lobbyId));
             client.outputStream.writeObject(new JoinLobbyResponse(true));
             client.outputStream.flush();
         } else if (request instanceof CreateLobbyRequest createLobby) {
@@ -152,7 +151,7 @@ public class Server {
             System.out.println("Received Ready Message for lobby: " + readyMessage.lobbyId);
             ServerLobby lobby = lobbies.get(readyMessage.lobbyId);
             lobby.readyPlayers += 1;
-            startGame(client, lobby);
+            startGame(lobby);
         } else if (request instanceof Move move) {
             System.out.println("Received Move Message for lobby: " + move.lobbyId);
             UUID lobbyId = move.lobbyId;
