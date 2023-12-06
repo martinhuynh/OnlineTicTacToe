@@ -14,6 +14,7 @@ public class PlayState extends GameState {
     public static JLabel player1, player2;
     private boolean pause = false;
     private JPanel board;
+    private boolean highlightMe = true;
 
     public char mark;
 
@@ -38,27 +39,26 @@ public class PlayState extends GameState {
     public void setMark(char mark) {
         this.mark = mark;
         toggleBoard(mark == ticTacToe.getMark());
-        highlight(ticTacToe.getMark());
+        highlightMe = mark == 'X';
+        highlight();
     }
 
     public void changePlayer() {
         ticTacToe.changePlayer();
         toggleBoard(mark == ticTacToe.getMark());
-        highlight(ticTacToe.getMark());
+        highlight();
     }
 
-    public void highlight(char letter) {
+    public void highlight() {
         Border blackline = BorderFactory.createLineBorder(Color.black);
-        if (letter == 'X') {
+        if (highlightMe) {
             player1.setBorder(blackline);
             player2.setBorder(null);
-        } else if (letter == 'O'){
+        } else {
             player2.setBorder(blackline);
             player1.setBorder(null);
-        } else {
-            player1.setBorder(null);
-            player2.setBorder(null);
         }
+        highlightMe = !highlightMe;
     }
 
     private void toggleBoard(boolean state) {
@@ -87,7 +87,8 @@ public class PlayState extends GameState {
                     s.setBackground(Color.YELLOW);
                 }
                 s.setEnabled(false);
-                highlight('P');
+                player1.setBorder(null);
+                player2.setBorder(null);
             }
         }
         return true;
@@ -184,9 +185,6 @@ public class PlayState extends GameState {
         gbc.gridx = 3;
         gbc.gridy = 0;
         add(new JLabel(""), gbc);
-
-        // Highlight player going first
-        highlight(ticTacToe.getMark());
     }
 
 
