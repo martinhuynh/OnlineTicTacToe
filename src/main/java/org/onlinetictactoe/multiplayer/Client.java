@@ -41,22 +41,30 @@ public class Client {
         return (Lobby) sendRevMsg(joinLobbyRequest);
     }
 
-    public ArrayList<LobbyInfo> listLobbies() {
-        ListLobbiesRequest listLobbiesRequest = new ListLobbiesRequest();
+    public ArrayList<Lobby> listLobbies() {
+        ListLobbiesRequest listLobbiesRequest = new ListLobbiesRequest(player);
         ListLobbiesResponse response = (ListLobbiesResponse) sendRevMsg(listLobbiesRequest);
-        return response.lobbyInfo;
+        return response.lobby;
     }
 
-    public Lobby createLobby(String lobbyId) {
-        CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyId, UUID.randomUUID(), 2, player);
+    public Lobby createLobby(UUID lobbyId, String lobbyName) {
+        CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyName, lobbyId, 2, player);
         return (Lobby) sendRevMsg(createLobbyRequest);
+    }
+
+    public boolean move(UUID lobbyId, int x, int y) {
+        return false;
+    }
+
+    public void quit(UUID lobbyId) {
+        sendRevMsg(new QuitMessage(lobbyId, player));
     }
 
     public static void main(String[] args) {
         Player player = new Player("Old Man", UUID.randomUUID());
-        Client client = new Client("localhost", 6666, player);
-        ArrayList<LobbyInfo> lobbies =  client.listLobbies();
-        for (LobbyInfo lobby : lobbies) {
+        Client client = new Client("73.118.226.57", 4001, player);
+        ArrayList<Lobby> lobbies =  client.listLobbies();
+        for (Lobby lobby : lobbies) {
             if (lobby == null) {
                 continue;
             }

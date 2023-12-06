@@ -93,12 +93,12 @@ public class Server {
             ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
             outputStream.writeObject(null);
         } else if (request instanceof ListLobbiesRequest) {
-            ArrayList<LobbyInfo> listOfLobbies = new ArrayList<>();
+            ArrayList<Lobby> listOfLobbies = new ArrayList<>();
             for (Map.Entry<UUID, ServerLobby> pair : lobbies.entrySet()) {
                 UUID id = pair.getKey();
                 ServerLobby serverLobby = pair.getValue();
-                LobbyInfo lobbyInfo = new LobbyInfo(id, serverLobby.name, serverLobby.players.size(), serverLobby.maxPlayers);
-                listOfLobbies.add(lobbyInfo);
+                Lobby lobby = new Lobby(serverLobby.name, id, serverLobby.players.size(), serverLobby.maxPlayers);
+                listOfLobbies.add(lobby);
             }
             ListLobbiesResponse response = new ListLobbiesResponse(listOfLobbies);
             ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
@@ -118,14 +118,28 @@ public class Server {
             }
         } else if (request instanceof Move move) {
             UUID lobbyId = move.lobbyId;
+            // confirm move is by right player
+            if (move.player.id != lobbies.get(lobbyId).currentMove.player.id) {
+                ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
+                outputStream.writeObject(null);
+                return;
+            }
+            // send sender back nothing adn forward move to other player
             for (ServerPlayer player: lobbies.get(lobbyId).players) {
                 if (player.socket == client) {
                     ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
                     outputStream.writeObject(null);
                     continue;
                 }
+                lobbies.get(lobbyId).currentMove = player;
                 ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
                 outputStream.writeObject(move);
+            }
+        } else if (request instanceof QuitMessage quitMessage) {
+            UUID lobbyId = quitMessage.lobbyId;
+            for (ServerPlayer player: lobbies.get(lobbyId).players) {
+                ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
+                outputStream.writeObject(quitMessage);
             }
         }
     }
