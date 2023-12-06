@@ -95,7 +95,7 @@ public class Server {
     }
 
     private void startGame(ServerPlayer client, ServerLobby lobby) throws IOException {
-        if (lobby.readyPlayers == lobby.maxPlayers) {
+        if (lobby.players.size() == lobby.maxPlayers) {
             System.out.println("Starting Lobby");
             Random rand = new Random();
             boolean firstPlayerX = rand.nextBoolean();
