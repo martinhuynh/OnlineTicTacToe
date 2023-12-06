@@ -110,6 +110,9 @@ public class Server {
                 } else {
                     serverPlayer.outputStream.writeObject(new StartGameMessage(playerSymbol, player1.player.name));
                 }
+                if (playerSymbol == 'X') {
+                    lobby.currentMove = serverPlayer;
+                }
                 serverPlayer.outputStream.flush();
             }
         }
