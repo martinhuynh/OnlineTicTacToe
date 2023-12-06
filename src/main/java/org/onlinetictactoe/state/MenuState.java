@@ -82,4 +82,9 @@ public class MenuState extends GameState {
     public void escape() {
         // Nothing
     }
+
+    @Override
+    public void update() {
+
+    }
 }

@@ -21,4 +21,9 @@ public class PauseState extends GameState {
     public void escape() {
 
     }
+
+    @Override
+    public void update() {
+
+    }
 }

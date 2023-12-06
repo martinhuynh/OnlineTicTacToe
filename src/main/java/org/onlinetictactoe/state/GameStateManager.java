@@ -54,11 +54,16 @@ public class GameStateManager {
     public void setState(State state) {
         main.remove(currentState);
         currentState = state.getState();
+        update();
         main.add(currentState);
         main.validate();
         currentState.validate();
         currentState.repaint();
         currentState.requestFocus();
+    }
+
+    public void update() {
+        currentState.update();
     }
 
     public void escape() {

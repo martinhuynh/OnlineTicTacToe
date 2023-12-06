@@ -24,8 +24,9 @@ public class MultiplayerState extends GameState {
         new Thread(() -> {
             while (true) {
                 try {
+                    lobbies = client.listLobbies();
                     refreshLobbies();
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -34,8 +35,8 @@ public class MultiplayerState extends GameState {
     }
 
     private void refreshLobbies() {
-        lobbies = client.listLobbies();
         innerContainer.removeAll();
+        innerContainer.revalidate();
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -52,8 +53,8 @@ public class MultiplayerState extends GameState {
             JPanel container = createLobbyPanel(lobbies.get(i));
 //            lobbyContainers.add(container);
             innerContainer.add(container, gbc);
-            innerContainer.revalidate();
         }
+        innerContainer.revalidate();
     }
 
     private void tempTestCreateLobbies() {
@@ -210,7 +211,10 @@ public class MultiplayerState extends GameState {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    System.out.println(lobby.lobbyName + " clicked");
+//                    System.out.println(lobby.lobbyName + " clicked");
+                    LobbyState.loadLobby(lobby);
+                    innerContainer.removeAll();
+                    innerContainer.revalidate();
                     gsm.setState(GameStateManager.State.LOBBY);
                 }
             }
@@ -219,7 +223,7 @@ public class MultiplayerState extends GameState {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    System.out.println(lobby.lobbyName + " pressed");
+//                    System.out.println(lobby.lobbyName + " pressed");
                     container.setBackground(clickColor);
                 }
             }
@@ -227,13 +231,13 @@ public class MultiplayerState extends GameState {
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
-                container.setBackground(hoverColor);
+//                container.setBackground(hoverColor);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
-                container.setBackground(defaultColor);
+//                container.setBackground(defaultColor);
             }
         });
         container.setMaximumSize(new Dimension(1000, 30));
@@ -306,6 +310,11 @@ public class MultiplayerState extends GameState {
     @Override
     public void escape() {
         gsm.setState(GameStateManager.State.MENU);
+    }
+
+    @Override
+    public void update() {
+        refreshLobbies();
     }
 
     public void updateLobbies() {

@@ -31,4 +31,9 @@ public class PlayState extends GameState {
 
         System.out.println(pause);
     }
+
+    @Override
+    public void update() {
+
+    }
 }

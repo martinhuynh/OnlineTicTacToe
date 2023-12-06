@@ -78,4 +78,9 @@ public class CreateLobby extends GameState {
     public void escape() {
         gsm.setState(GameStateManager.State.MULTIPLAYER);
     }
+
+    @Override
+    public void update() {
+
+    }
 }
