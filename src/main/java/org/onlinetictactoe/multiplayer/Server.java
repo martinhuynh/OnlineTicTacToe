@@ -87,6 +87,7 @@ public class Server {
 
     private void handleRequest(Object request, Socket client) throws IOException {
         if (request instanceof JoinLobbyRequest joinLobby) {
+            System.out.println("Received Join Request on Lobby: " + joinLobby.lobbyId);
             boolean successfulJoin = joinLobby(client, joinLobby);
             if (!successfulJoin) {
                 ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
@@ -96,6 +97,7 @@ public class Server {
             ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
             outputStream.writeObject(joinLobby.lobbyId);
         } else if (request instanceof CreateLobbyRequest createLobby) {
+            System.out.println("Received Create Request");
             createLobby(createLobby.lobbyId, createLobby.lobbyName, createLobby.maxPlayers);
             lobbies.get(createLobby.lobbyId).players.add(new ServerPlayer(client, createLobby.player));
             ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
@@ -112,6 +114,7 @@ public class Server {
             ObjectOutputStream outputStream = new ObjectOutputStream(client.getOutputStream());
             outputStream.writeObject(response);
         } else if (request instanceof ReadyMessage readyMessage) {
+            System.out.println("Received Ready Message for lobby: " + readyMessage.lobbyId);
             ServerLobby lobby = lobbies.get(readyMessage.lobbyId);
             lobby.readyPlayers += 1;
             if (lobby.readyPlayers == lobby.maxPlayers) {
@@ -125,6 +128,7 @@ public class Server {
                 }
             }
         } else if (request instanceof Move move) {
+            System.out.println("Received Move Message for lobby: " + move.lobbyId);
             UUID lobbyId = move.lobbyId;
             // confirm move is by right player
             if (move.player.id != lobbies.get(lobbyId).currentMove.player.id) {
@@ -144,12 +148,9 @@ public class Server {
                 outputStream.writeObject(move);
             }
         } else if (request instanceof QuitMessage quitMessage) {
+            System.out.println("Received Move Message for lobby: " + quitMessage.lobbyId);
             UUID lobbyId = quitMessage.lobbyId;
-            for (ServerPlayer player: lobbies.get(lobbyId).players) {
-                ObjectOutputStream outputStream = new ObjectOutputStream(player.socket.getOutputStream());
-                outputStream.writeObject(quitMessage);
-            }
-            lobbies.remove(lobbyId);
+            removeLobby(lobbyId);
         }
     }
 
