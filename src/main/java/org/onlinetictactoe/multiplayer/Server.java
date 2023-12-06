@@ -150,8 +150,10 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 new Thread(() -> {
                     try {
-                        Object object = new ObjectInputStream(socket.getInputStream()).readObject();
-                        handleRequest(object, socket);
+                        while (socket.isConnected()) {
+                            Object object = new ObjectInputStream(socket.getInputStream()).readObject();
+                            if (object != null) handleRequest(object, socket);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -163,7 +165,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(6666);
+        Server server = new Server(4001);
         server.createLobby(UUID.randomUUID(), "old", 2);
         server.createLobby(UUID.randomUUID(), "old1", 2);
         server.createLobby(UUID.randomUUID(), "old2", 2);
