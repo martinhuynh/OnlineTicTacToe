@@ -21,6 +21,7 @@ public class Client {
     private ObjectInputStream inputStream;
 
     private Player player;
+    private PlayState playState;
 
     public Client(String serverIp, int serverPort, Player player) {
         try {
@@ -39,6 +40,10 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setPlayState(PlayState playState) {
+        this.playState = playState;
     }
 
     public void joinLobby(UUID lobbyId) {
@@ -71,7 +76,7 @@ public class Client {
             MultiplayerState.lobbies = listLobbiesResponse.lobby;
             MultiplayerState.refreshLobbies();
         } else if (object instanceof StartGameMessage startGameMessage) {
-            PlayState.setMark(startGameMessage.playerMark);
+            playState.setMark(startGameMessage.playerMark);
             startCountDown();
         } else if (object instanceof Move) {
         } else if (object instanceof QuitMessage) {

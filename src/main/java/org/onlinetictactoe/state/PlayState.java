@@ -9,22 +9,23 @@ import java.util.ArrayList;
 
 public class PlayState extends GameState {
     private PauseState pauseState;
-    public static TicTacToe ticTacToe;
-    private static ArrayList<GameSquare> squares = new ArrayList<>();
+    public TicTacToe ticTacToe;
+    private ArrayList<GameSquare> squares = new ArrayList<>();
     private JLabel player1, player2;
     private boolean pause = false;
 
-    public static char mark;
+    public char mark;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
         pauseState = new PauseState(gsm);
+        client.setPlayState(this);
         ticTacToe = new TicTacToe();
         setup();
     }
 
-    public static void setMark(char mark) {
-        PlayState.mark = mark;
+    public void setMark(char mark) {
+        this.mark = mark;
         toggleBoard(mark == ticTacToe.getMark());
     }
 
@@ -48,7 +49,7 @@ public class PlayState extends GameState {
         }
     }
 
-    private static void toggleBoard(boolean state) {
+    private void toggleBoard(boolean state) {
         for (GameSquare square : squares) {
             square.setEnabled(state);
         }
