@@ -105,6 +105,7 @@ public class Server {
             for (int i = 0; i < lobby.players.size(); i++) {
                 ServerPlayer serverPlayer = lobby.players.get(i);
                 char playerSymbol = firstPlayerX ? 'X' : 'O';
+                firstPlayerX = !firstPlayerX;
                 if (i == 0) {
                     serverPlayer.outputStream.writeObject(new StartGameMessage(playerSymbol, player2.player.name));
                 } else {
@@ -157,8 +158,6 @@ public class Server {
             UUID lobbyId = move.lobbyId;
             // confirm move is by right player
             if (move.player.id != lobbies.get(lobbyId).currentMove.player.id) {
-                client.outputStream.writeObject(null);
-                client.outputStream.flush();
                 return;
             }
             // send sender back nothing adn forward move to other player
