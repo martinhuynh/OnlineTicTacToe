@@ -10,23 +10,33 @@ import java.util.ArrayList;
 public class PlayState extends GameState {
     private PauseState pauseState;
     public TicTacToe ticTacToe;
-    private ArrayList<GameSquare> squares = new ArrayList<>();
+    private ArrayList<GameSquare> squares;
     private JLabel player1, player2;
     private boolean pause = false;
+    private JPanel board;
 
     public char mark;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
         pauseState = new PauseState(gsm);
-        client.setPlayState(this);
         ticTacToe = new TicTacToe();
+        client.setPlayState(this);
+        squares = new ArrayList<>();
+        initGrid();
         setup();
+    }
+
+    public void reset() {
+        ticTacToe = new TicTacToe();
+        squares = new ArrayList<>();
+        initGrid();
     }
 
     public void setMark(char mark) {
         this.mark = mark;
         toggleBoard(mark == ticTacToe.getMark());
+        highlight(ticTacToe.getMark());
     }
 
     public void changePlayer() {
@@ -81,8 +91,9 @@ public class PlayState extends GameState {
         return true;
     }
 
-    public JPanel grid() {
-        JPanel board = new JPanel();
+    public void initGrid() {
+        if (board == null) board = new JPanel();
+        board.removeAll();
         GridLayout layout = new GridLayout();
         layout.setColumns(3);
         layout.setRows(3);
@@ -99,7 +110,6 @@ public class PlayState extends GameState {
             square.setText(" ");
             board.add(square);
         }
-        return board;
     }
 
     public void setup() {
@@ -159,7 +169,7 @@ public class PlayState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 1;
-        add(grid(), gbc);
+        add(board, gbc);
 
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.8;

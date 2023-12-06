@@ -113,7 +113,7 @@ public class LobbyState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 4;
-        countdown = new JLabel("player2");
+        countdown = new JLabel("Waiting for player to join");
         countdown.setHorizontalAlignment(JLabel.CENTER);
         countdown.setFont(new Font("Arial", Font.PLAIN, 40));
         add(countdown, gbc);

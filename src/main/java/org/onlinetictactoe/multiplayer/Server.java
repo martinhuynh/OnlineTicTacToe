@@ -168,8 +168,8 @@ public class Server {
                     continue;
                 }
                 lobbies.get(lobbyId).currentMove = player;
-                client.outputStream.writeObject(move);
-                client.outputStream.flush();
+                player.outputStream.writeObject(move);
+                player.outputStream.flush();
             }
         } else if (request instanceof QuitMessage quitMessage) {
             System.out.println("Received Quit Message for lobby: " + quitMessage.lobbyId);
