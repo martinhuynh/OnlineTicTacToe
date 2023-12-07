@@ -81,6 +81,15 @@ public class Server {
     }
 
     private void removeLobby(QuitMessage quitMessage) {
+        for (ServerPlayer player: lobbies.get(quitMessage.lobbyId).players) {
+            if (player.player.id == quitMessage.player.id) {
+                continue;
+            }
+            try {
+                player.outputStream.writeObject(new QuitMessage(quitMessage.lobbyId, player.player));
+                player.outputStream.flush();
+            } catch (Exception ignored) {}
+        }
         lobbies.remove(quitMessage.lobbyId);
     }
 
