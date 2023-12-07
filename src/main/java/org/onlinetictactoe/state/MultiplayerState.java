@@ -95,7 +95,7 @@ public class MultiplayerState extends GameState {
     }
 
     private void setup() {
-        setBackground(Color.RED);
+        setBackground(Color.GRAY);
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
@@ -137,7 +137,7 @@ public class MultiplayerState extends GameState {
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.insets = new Insets(0, 0, 0, 0);;
         outerContainer.add(innerContainer, gbc);
-        outerContainer.setBackground(Color.GRAY);
+        outerContainer.setBackground(Color.lightGray);
 
         JScrollPane scrollPane = new JScrollPane(outerContainer);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

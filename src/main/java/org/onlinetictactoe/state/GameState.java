@@ -13,9 +13,9 @@ public abstract class GameState extends JPanel {
     protected static Player player;
     public GameState(GameStateManager gsm) {
         if (gsm != null) this.gsm = gsm;
-        if (player == null) player = new Player("Default", UUID.randomUUID());
+        if (player == null) player = new Player("martin", UUID.randomUUID());
         if (client == null) {
-            client = new Client("localhost", 4001, player);
+            client = new Client("localhost", 4002, player);
             client.start();
         }
         setFocusable(true);

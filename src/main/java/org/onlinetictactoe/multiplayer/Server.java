@@ -218,12 +218,12 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(4001);
-        server.createLobby(UUID.randomUUID(), "old", 2);
-        server.createLobby(UUID.randomUUID(), "old1", 2);
-        server.createLobby(UUID.randomUUID(), "old2", 2);
-        server.createLobby(UUID.randomUUID(), "old3", 2);
-        server.createLobby(UUID.randomUUID(), "old4", 2);
+        Server server = new Server(4002);
+        server.createLobby(UUID.randomUUID(), "Lobby 1", 2);
+        server.createLobby(UUID.randomUUID(), "Lobby 2", 2);
+        server.createLobby(UUID.randomUUID(), "Lobby 3", 2);
+        server.createLobby(UUID.randomUUID(), "Lobby 4", 2);
+        server.createLobby(UUID.randomUUID(), "Lobby 5", 2);
         server.start();
     }
 }

@@ -107,6 +107,7 @@ public class LobbyState extends GameState {
         gbc.gridy = 3;
         player2 = new JLabel("player2");
         player2.setHorizontalAlignment(JLabel.CENTER);
+        player2.setText(" ");
         player2.setFont(font);
         add(player2, gbc);
 
@@ -146,6 +147,7 @@ public class LobbyState extends GameState {
     @Override
     public void update() {
         player1.setText(player.name);
+        player2.setText(" ");
         countdown.setText("Waiting for player to join");
     }
 }

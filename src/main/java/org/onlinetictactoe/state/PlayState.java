@@ -40,6 +40,13 @@ public class PlayState extends GameState {
         this.mark = mark;
         toggleBoard(mark == ticTacToe.getMark());
         highlightMe = mark == 'X';
+        if (highlightMe) {
+            player1.setText(player1.getText() + ": X");
+            player2.setText(player2.getText() + ": O");
+        } else {
+            player1.setText(player1.getText() + ": O");
+            player2.setText(player2.getText() + ": X");
+        }
         highlight();
     }
 
@@ -120,7 +127,7 @@ public class PlayState extends GameState {
 //        label.setLocation(100, 100);
 //        add(label);
 
-        setBackground(Color.GREEN);
+        setBackground(Color.LIGHT_GRAY);
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
