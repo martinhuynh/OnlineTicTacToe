@@ -56,39 +56,6 @@ public class MultiplayerState extends GameState {
         innerContainer.revalidate();
     }
 
-    private void tempTestCreateLobbies() {
-        addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.gridx = 0;
-                    gbc.gridy = lobbies.size();
-                    gbc.weighty = 0;
-                    gbc.weightx = 1;
-                    gbc.ipady = 0;
-                    gbc.anchor = GridBagConstraints.NORTH;
-                    gbc.fill = GridBagConstraints.HORIZONTAL;
-                    UUID uuid = UUID.randomUUID();
-                    lobbies.add(new Lobby("Added", uuid,0, 2));
-
-                    innerContainer.add(createLobbyPanel(lobbies.get(lobbies.size() - 1)), gbc);
-                    innerContainer.revalidate();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-    }
-
     private void calculateColors() {
         hoverColor = darker(defaultColor, hoverDegree);
         clickColor = darker(defaultColor, clickDegree);
@@ -99,22 +66,7 @@ public class MultiplayerState extends GameState {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
-//
-//        innerContainer = new JPanel();
-//        innerContainer.setBackground(Color.CYAN);
-//        innerContainer.setLayout(layout);
-//        gbc.weighty = 0;
-//        gbc.weightx = 1;
-//        gbc.ipady = 0;
-//        gbc.anchor = GridBagConstraints.NORTH;
-//        gbc.fill = GridBagConstraints.HORIZONTAL;
-//        for(int i = 0; i < lobbies.size(); i++) {
-//            gbc.gridx = 0;
-//            gbc.gridy = i;
-//            JPanel container = createLobbyPanel(lobbies.get(i));
-//            lobbyContainers.add(container);
-//            innerContainer.add(container, gbc);
-//        }
+
         JPanel outerContainer = new JPanel();
         outerContainer.setLayout(layout);
 

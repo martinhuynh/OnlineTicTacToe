@@ -94,7 +94,7 @@ public class MenuState extends GameState {
         playButton.setEnabled(false);
         add(playButton, gbc);
 
-        gbc.weightx = 0;
+        gbc.weightx = 0.2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
@@ -103,6 +103,21 @@ public class MenuState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 2;
+        JButton scoreboard = new JButton("Scoreboard");
+        scoreboard.addActionListener(e -> {
+            gsm.setState(GameStateManager.State.SCOREBOARD);
+        });
+        add(scoreboard, gbc);
+
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.ipadx = 10;
+        gbc.ipady = 10;
+        gbc.gridx = 1;
+        gbc.gridy = 3;
         JButton b3 = new JButton("Quit");
         b3.addActionListener(e -> {
 //            gsm.setState(GameStateManager.State.PLAY);
@@ -118,7 +133,7 @@ public class MenuState extends GameState {
         gbc.ipadx = 10;
         gbc.ipady = 0;
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         JLabel username = new JLabel("Username");
         username.setFont(new Font("Arial", Font.PLAIN, 15));
         add(username, gbc);
@@ -131,7 +146,7 @@ public class MenuState extends GameState {
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         JTextField usernameField = new JTextField("Enter username");
         usernameField.addFocusListener(new FocusListener() {
             @Override
@@ -159,7 +174,7 @@ public class MenuState extends GameState {
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.gridx = 2;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         JButton b4 = new JButton("Confirm");
         b4.addActionListener((e) -> {
             b4.setEnabled(false);

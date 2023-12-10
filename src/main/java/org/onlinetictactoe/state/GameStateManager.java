@@ -14,7 +14,8 @@ public class GameStateManager {
         MENU(menuState),
         LOBBY(lobbyState),
         CREATE_LOBBY(createLobby),
-        MULTIPLAYER(multiplayerState);
+        MULTIPLAYER(multiplayerState),
+        SCOREBOARD(scoreboardState);
         private GameState gameState;
         public GameState getState() {
             return gameState;
@@ -30,6 +31,7 @@ public class GameStateManager {
     private static CreateLobby createLobby;
     private static LobbyState lobbyState;
     private static MultiplayerState multiplayerState;
+    private static ScoreboardState scoreboardState;
     private GameState previousState;
     private GameState currentState;
 
@@ -45,6 +47,7 @@ public class GameStateManager {
         createLobby = new CreateLobby(this);
         lobbyState = new LobbyState(this);
         multiplayerState = new MultiplayerState(this);
+        scoreboardState = new ScoreboardState(this);
 
         currentState = menuState;
         previousState = pauseState;
