@@ -22,6 +22,7 @@ public class MenuState extends GameState {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(layout);
+        Font font = new Font("Arial", 0, 20);
 
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.8;
@@ -43,8 +44,8 @@ public class MenuState extends GameState {
         gbc.gridx = 1;
         gbc.gridy = 0;
         JLabel title = new JLabel("Tic Tac Toe");
-        Font font = new Font("Arial", Font.BOLD, 40);
-        title.setFont(font);
+        Font font2 = new Font("Arial", Font.BOLD, 40);
+        title.setFont(font2);
         add(title, gbc);
 
         gbc.weightx = 0.2;
@@ -60,6 +61,7 @@ public class MenuState extends GameState {
         playButton.addActionListener(e -> {
             gsm.setState(GameStateManager.State.MULTIPLAYER);
         });
+        playButton.setFont(font);
         playButton.setEnabled(false);
         add(playButton, gbc);
 
@@ -76,13 +78,14 @@ public class MenuState extends GameState {
         scoreboard.addActionListener(e -> {
             gsm.setState(GameStateManager.State.SCOREBOARD);
         });
+        scoreboard.setFont(font);
         add(scoreboard, gbc);
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.insets = new Insets(10, 0, 10, 0);
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.gridx = 1;
@@ -92,6 +95,7 @@ public class MenuState extends GameState {
 //            gsm.setState(GameStateManager.State.PLAY);
             System.exit(1);
         });
+        b3.setFont(font);
         add(b3, gbc);
 
         gbc.weightx = 0;
@@ -111,7 +115,7 @@ public class MenuState extends GameState {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.insets = new Insets(0, 0, 10, 5);
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.gridx = 1;
