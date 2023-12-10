@@ -125,12 +125,8 @@ public class Server {
         } else if (request instanceof CreateLobbyRequest createLobby) {
             System.out.println("Received Create Request");
             createLobby(createLobby.lobbyId, createLobby.lobbyName, createLobby.maxPlayers);
-            lobbies.get(createLobby.lobbyId).players.add(client);
-            client.outputStream.writeObject(null);
-            client.outputStream.flush();
         } else if (request instanceof ListLobbiesRequest) {
             System.out.println("Received List Lobbies Request");
-
             ArrayList<Lobby> listOfLobbies = new ArrayList<>();
             for (Map.Entry<UUID, ServerLobby> pair : lobbies.entrySet()) {
                 UUID id = pair.getKey();
@@ -165,6 +161,14 @@ public class Server {
         } else if (request instanceof QuitMessage quitMessage) {
             System.out.println("Received Quit Message for lobby: " + quitMessage.lobbyId);
             removeLobby(quitMessage);
+        } else if (request instanceof ChatMessage chatMessage) {
+            for (ServerPlayer player: lobbies.get(chatMessage.lobbyId).players) {
+                if (player.player.id == chatMessage.player.id) {
+                    continue;
+                }
+                player.outputStream.writeObject(chatMessage);
+                player.outputStream.flush();
+            }
         }
     }
 

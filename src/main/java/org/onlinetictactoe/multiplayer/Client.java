@@ -82,7 +82,8 @@ public class Client {
             startCountDown();
         } else if (object instanceof Move move) {
             playState.makeMove(move.x, move.y);
-        } else if (object instanceof QuitMessage) {
+        } else if (object instanceof ChatMessage chatMessage) {
+            playState.addChatMSG(chatMessage.player.name, chatMessage.message);
         }
 
     }
