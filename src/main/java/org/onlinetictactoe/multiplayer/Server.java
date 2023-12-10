@@ -59,12 +59,12 @@ public class Server {
             e.printStackTrace();
         }
 
-        try (FileInputStream fis = new FileInputStream("hashmap.ser");
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-            this.scoreBoard = (ConcurrentHashMap<String, Integer>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try (FileInputStream fis = new FileInputStream("scores.ser");
+//             ObjectInputStream ois = new ObjectInputStream(fis)) {
+//            this.scoreBoard = (ConcurrentHashMap<String, Integer>) ois.readObject();
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void createLobby(UUID id, String lobbyName, int maxPlayers) {
