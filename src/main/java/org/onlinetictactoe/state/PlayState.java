@@ -215,8 +215,6 @@ public class PlayState extends GameState {
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setColumns(2);
         textArea.setFont(new Font("Arial", Font.PLAIN, 15));
-        JScrollBar vertical = scrollPane.getVerticalScrollBar();
-        vertical.setValue(vertical.getMaximum());
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1;
