@@ -2,11 +2,47 @@ package org.onlinetictactoe.state;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class MenuState extends GameState {
     public MenuState(GameStateManager gsm) {
         super(gsm);
+        setFocusable(true);
+        setupFocusable();
         setup();
+    }
+
+    private void setupFocusable() {
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+
+        });
     }
 
     public void setup() {
@@ -27,6 +63,7 @@ public class MenuState extends GameState {
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.2;
 //        gbc.weighty = 0.5;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.insets = new Insets(0, 0, 10, 0);
         gbc.ipadx = 10;
@@ -40,7 +77,7 @@ public class MenuState extends GameState {
 
         gbc.weightx = 0.2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.insets = new Insets(0, 0, 10, 0);
         gbc.ipadx = 10;
@@ -51,11 +88,12 @@ public class MenuState extends GameState {
         playButton.addActionListener(e -> {
             gsm.setState(GameStateManager.State.MULTIPLAYER);
         });
+        playButton.setEnabled(false);
         add(playButton, gbc);
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.insets = new Insets(0, 0, 10, 0);
         gbc.ipadx = 10;
@@ -71,17 +109,60 @@ public class MenuState extends GameState {
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(20, 0, 00, 0);
+        gbc.ipadx = 10;
+        gbc.ipady = 0;
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        JLabel username = new JLabel("Username");
+        username.setFont(new Font("Arial", Font.PLAIN, 15));
+        add(username, gbc);
+
+        gbc.weightx = 0.2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.insets = new Insets(0, 0, 10, 0);
         gbc.ipadx = 10;
         gbc.ipady = 10;
         gbc.gridx = 1;
-        gbc.gridy = 3;
-        JButton b4 = new JButton("Test");
-        b4.addActionListener(e -> {
-            gsm.setState(GameStateManager.State.PLAY);
-//            System.exit(1);
+        gbc.gridy = 4;
+        JTextField usernameField = new JTextField("Enter username");
+        usernameField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (usernameField.getText().equals("Enter username")) {
+                    usernameField.setText("");
+                    usernameField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (usernameField.getText().isEmpty()) {
+                    usernameField.setForeground(Color.GRAY);
+                    usernameField.setText("Enter username");
+                }
+            }
+        });
+        add(usernameField, gbc);
+
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.ipadx = 10;
+        gbc.ipady = 10;
+        gbc.gridx = 2;
+        gbc.gridy = 4;
+        JButton b4 = new JButton("Confirm");
+        b4.addActionListener((e) -> {
+            b4.setEnabled(false);
+            usernameField.setEnabled(false);
+            playButton.setEnabled(true);
+            player.name = usernameField.getText();
         });
         add(b4, gbc);
 
@@ -93,7 +174,7 @@ public class MenuState extends GameState {
         gbc.insets = new Insets(0, 0, 0, 0);
         gbc.ipadx = 0;
         gbc.ipady = 0;
-        gbc.gridx = 2;
+        gbc.gridx = 3;
         gbc.gridy = 0;
         add(new JLabel(""), gbc);
     }
