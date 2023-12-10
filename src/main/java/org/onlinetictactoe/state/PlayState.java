@@ -17,6 +17,7 @@ public class PlayState extends GameState {
     private JPanel board;
     private boolean highlightMe = true;
     private JTextArea textArea;
+    private JScrollPane scrollPane;
 
     public char mark;
 
@@ -202,6 +203,8 @@ public class PlayState extends GameState {
     }
 
     public void addChatMSG(String user, String msg) {
+        JScrollBar vertical = scrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
         textArea.append(user + ": " + msg + "\n");
     }
 
@@ -212,7 +215,7 @@ public class PlayState extends GameState {
         GridBagLayout layout = new GridBagLayout();
         container.setLayout(layout);
         GridBagConstraints gbc = new GridBagConstraints();
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane = new JScrollPane(textArea);
         textArea.setColumns(2);
         textArea.setFont(new Font("Arial", Font.PLAIN, 15));
 
@@ -244,12 +247,9 @@ public class PlayState extends GameState {
             if (textField.getText().isBlank()) {
                 return;
             }
-            JScrollBar vertical = scrollPane.getVerticalScrollBar();
             addChatMSG(player.name, textField.getText());
             client.sendChatMessage(LobbyState.lobby.lobbyId, textField.getText());
             textField.setText("");
-
-            vertical.setValue(vertical.getMaximum());
         });
         container.add(textField, gbc);
         return container;
