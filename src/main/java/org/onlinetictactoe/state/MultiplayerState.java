@@ -79,7 +79,7 @@ public class MultiplayerState extends GameState {
         title.setFont(font);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.weightx = 1;
         gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -109,13 +109,13 @@ public class MultiplayerState extends GameState {
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         gbc.weightx = 0.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         add(scrollPane, gbc);
 
-        gbc.gridx = 3;
+        gbc.gridx = 4;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 1;
@@ -123,12 +123,26 @@ public class MultiplayerState extends GameState {
         gbc.fill = GridBagConstraints.NONE;
         add(new JLabel(""), gbc);
 
-
         Font font2 = new Font("Arial", 0, 20);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        gbc.weightx = 0.5;
+        gbc.weightx = 0.2;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.ipadx = 5;
+        gbc.ipady = 5;
+        gbc.insets = new Insets(0, 0, 60, 0);
+        gbc.anchor = GridBagConstraints.WEST;
+        JButton createLobby = new JButton("Create Lobby");
+        createLobby.setFont(font2);
+        createLobby.addActionListener(e -> gsm.setState(GameStateManager.State.CREATE_LOBBY));
+        add(createLobby, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0.2;
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.ipadx = 5;
@@ -136,16 +150,13 @@ public class MultiplayerState extends GameState {
         gbc.insets = new Insets(0, 0, 60, 0);
         gbc.anchor = GridBagConstraints.WEST;
         JButton lobby = new JButton("Refresh");
-
-        // Create Lobby action
-//        lobby.addActionListener(e -> gsm.setState(GameStateManager.State.CREATE_LOBBY));
         lobby.setFont(font2);
         add(lobby, gbc);
 
-        gbc.gridx = 2;
+        gbc.gridx = 3;
         gbc.gridy = 2;
         gbc.gridwidth = 1;
-        gbc.weightx = 0.5;
+        gbc.weightx = 0.2;
         gbc.weighty = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.ipadx = 5;

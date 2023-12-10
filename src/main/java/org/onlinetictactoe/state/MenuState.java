@@ -14,38 +14,7 @@ public class MenuState extends GameState {
     public MenuState(GameStateManager gsm) {
         super(gsm);
         setFocusable(true);
-        setupFocusable();
         setup();
-    }
-
-    private void setupFocusable() {
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                requestFocus();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-
-        });
     }
 
     public void setup() {
@@ -164,6 +133,14 @@ public class MenuState extends GameState {
                 }
             }
         });
+
+        JButton b4 = new JButton("Confirm");
+        usernameField.addActionListener((e) -> {
+            b4.setEnabled(false);
+            usernameField.setEnabled(false);
+            playButton.setEnabled(true);
+            player = new Player(usernameField.getText(), UUID.randomUUID());
+        });
         add(usernameField, gbc);
 
         gbc.weightx = 0;
@@ -175,7 +152,6 @@ public class MenuState extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 2;
         gbc.gridy = 5;
-        JButton b4 = new JButton("Confirm");
         b4.addActionListener((e) -> {
             b4.setEnabled(false);
             usernameField.setEnabled(false);

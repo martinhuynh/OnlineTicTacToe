@@ -5,6 +5,8 @@ import org.onlinetictactoe.multiplayer.Client;
 import org.onlinetictactoe.player.Player;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.UUID;
 
 public abstract class GameState extends JPanel {
@@ -18,7 +20,38 @@ public abstract class GameState extends JPanel {
             client = new Client("localhost", 4001);
             client.start();
         }
+        setupFocusable();
         setFocusable(true);
+    }
+
+    private void setupFocusable() {
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+
+        });
     }
 
     public abstract void escape();
