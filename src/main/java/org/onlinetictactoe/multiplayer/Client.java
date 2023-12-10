@@ -61,8 +61,8 @@ public class Client {
         sendMsg(listLobbiesRequest);
     }
 
-    public void createLobby(UUID lobbyId, String lobbyName, Player player) {
-        CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyName, lobbyId, 2, player);
+    public void createLobby(UUID lobbyId, String lobbyName) {
+        CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyName, lobbyId, 2);
         sendMsg(createLobbyRequest);
     }
 
