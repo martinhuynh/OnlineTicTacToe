@@ -59,11 +59,11 @@ public class Server {
             e.printStackTrace();
         }
 
-        try (FileInputStream fis = new FileInputStream("hashmap.ser");
+        try (FileInputStream fis = new FileInputStream("scores.ser");
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             this.scoreBoard = (ConcurrentHashMap<String, Integer>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            this.scoreBoard = new ConcurrentHashMap<>();
         }
     }
 
@@ -248,7 +248,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(4002);
+        Server server = new Server(4001);
         server.createLobby(UUID.randomUUID(), "Lobby 1", 2);
         server.createLobby(UUID.randomUUID(), "Lobby 2", 2);
         server.createLobby(UUID.randomUUID(), "Lobby 3", 2);

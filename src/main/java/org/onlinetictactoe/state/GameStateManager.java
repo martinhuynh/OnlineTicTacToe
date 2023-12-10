@@ -57,7 +57,9 @@ public class GameStateManager {
     public void setState(State state) {
         if (state == State.LOBBY) playState.reset();
         main.remove(currentState);
+        currentState.running = false;
         currentState = state.getState();
+        currentState.running = true;
         update();
         main.add(currentState);
         main.validate();

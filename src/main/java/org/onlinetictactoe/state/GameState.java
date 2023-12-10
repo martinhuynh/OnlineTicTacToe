@@ -11,6 +11,7 @@ public abstract class GameState extends JPanel {
     protected static GameStateManager gsm;
     protected static Client client;
     protected static Player player;
+    protected boolean running = false;
     public GameState(GameStateManager gsm) {
         if (gsm != null) this.gsm = gsm;
         if (client == null) {

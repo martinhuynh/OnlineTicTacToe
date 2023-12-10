@@ -112,6 +112,9 @@ public class ScoreboardState extends GameState {
         new Thread(() -> {
             while (true) {
                 try {
+                    while (!running) {
+                        Thread.sleep(10);
+                    }
                     client.requestScoreboard();
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
