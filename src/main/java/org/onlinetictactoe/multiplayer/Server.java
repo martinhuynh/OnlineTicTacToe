@@ -178,9 +178,9 @@ public class Server {
             String name = winMessage.player.name;
             if (scoreBoard.containsKey(name)) {
                 scoreBoard.put(name, scoreBoard.get(name) + 1);
-                return;
+            } else {
+                scoreBoard.put(name, 1);
             }
-            scoreBoard.put(name, 1);
             try (FileOutputStream fos = new FileOutputStream("scores.ser");
                  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                 oos.writeObject(scoreBoard);
