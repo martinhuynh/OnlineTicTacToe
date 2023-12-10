@@ -271,6 +271,7 @@ public class PlayState extends GameState {
     @Override
     public void update() {
         pause = false;
+        textArea.setText("");
         player1.setText((player.name.length() > 8) ? player.name.substring(0, 8) + ".." : player.name);
         player1.setText(player1.getText() + ": " + mark);
         player2.setText(player2.getText() + ": " + ((mark == 'X') ? 'O' : 'X'));
