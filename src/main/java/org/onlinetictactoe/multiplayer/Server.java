@@ -188,7 +188,7 @@ public class Server {
                 e.printStackTrace();
             }
         } else if (request instanceof ScoreBoardRequest) {
-            TreeMap<Integer, ArrayList<String>> treeMap = new TreeMap<>();
+            TreeMap<Integer, ArrayList<String>> treeMap = new TreeMap<>(Comparator.reverseOrder());
             for (Map.Entry<String, Integer> entry: scoreBoard.entrySet()) {
                 ArrayList<String> playersWithScore = treeMap.getOrDefault(entry.getValue(), new ArrayList<>());
                 playersWithScore.add(entry.getKey());
