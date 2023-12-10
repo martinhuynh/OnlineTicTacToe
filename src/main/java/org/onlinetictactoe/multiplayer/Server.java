@@ -3,9 +3,7 @@ import org.onlinetictactoe.multiplayer.messages.*;
 import org.onlinetictactoe.player.Player;
 import org.onlinetictactoe.state.Lobby;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -58,6 +56,13 @@ public class Server {
         try {
             this.serverSocket = new ServerSocket(port);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (FileInputStream fis = new FileInputStream("hashmap.ser");
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            this.scoreBoard = (ConcurrentHashMap<String, Integer>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -175,12 +180,20 @@ public class Server {
                 return;
             }
             scoreBoard.put(name, 1);
-        } else if (request instanceof ScoreBoardRequest) {
-            TreeMap<Integer, String> treeMap = new TreeMap<>();
-            for (Map.Entry<String, Integer> entry: scoreBoard.entrySet()) {
-                treeMap.put(entry.getValue(), entry.getKey());
+            try (FileOutputStream fos = new FileOutputStream("scores.ser");
+                 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+                oos.writeObject(scoreBoard);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            client.outputStream.writeObject(treeMap);
+        } else if (request instanceof ScoreBoardRequest) {
+            TreeMap<Integer, ArrayList<String>> treeMap = new TreeMap<>();
+            for (Map.Entry<String, Integer> entry: scoreBoard.entrySet()) {
+                ArrayList<String> playersWithScore = treeMap.getOrDefault(entry.getValue(), new ArrayList<>());
+                playersWithScore.add(entry.getKey());
+                treeMap.put(entry.getValue(), playersWithScore);
+            }
+            client.outputStream.writeObject(new ScoreBoardResponse(treeMap));
             client.outputStream.flush();
         }
     }

@@ -10,6 +10,7 @@ public class ScoreboardState extends GameState {
     private JPanel innerContainer = new JPanel();
     public ScoreboardState(GameStateManager gsm) {
         super(gsm);
+        client.setScoreboardState(this);
         setup();
         pollScores();
     }
@@ -86,7 +87,7 @@ public class ScoreboardState extends GameState {
         gbc.anchor = GridBagConstraints.WEST;
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener((e) -> {
-            refreshScores();
+            client.requestScoreboard();
         });
         refresh.setFont(font2);
         add(refresh, gbc);
@@ -111,7 +112,7 @@ public class ScoreboardState extends GameState {
         new Thread(() -> {
             while (true) {
                 try {
-                    refreshScores();
+                    client.requestScoreboard();
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -120,8 +121,7 @@ public class ScoreboardState extends GameState {
         }).start();
     }
 
-    private void refreshScores() {
-        TreeMap<Integer, ArrayList<String>> scores = new TreeMap<>();
+    public void refreshScores(TreeMap<Integer, ArrayList<String>> scores) {
         innerContainer.removeAll();
         innerContainer.revalidate();
         GridBagLayout layout = new GridBagLayout();

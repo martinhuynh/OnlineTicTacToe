@@ -4,8 +4,8 @@ import org.onlinetictactoe.multiplayer.messages.*;
 import org.onlinetictactoe.player.Player;
 import org.onlinetictactoe.state.MultiplayerState;
 import org.onlinetictactoe.state.PlayState;
+import org.onlinetictactoe.state.ScoreboardState;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -22,6 +22,8 @@ public class Client {
     private ObjectInputStream inputStream;
 
     private PlayState playState;
+
+    private ScoreboardState scoreboardState;
 
     public Client(String serverIp, int serverPort) {
         try {
@@ -43,6 +45,10 @@ public class Client {
 
     public void setPlayState(PlayState playState) {
         this.playState = playState;
+    }
+
+    public void setScoreboardState(ScoreboardState scoreboardState) {
+        this.scoreboardState = scoreboardState;
     }
 
     public void joinLobby(UUID lobbyId, Player player) {
@@ -74,6 +80,15 @@ public class Client {
         sendMsg(new QuitMessage(lobbyId, player));
     }
 
+    public void requestScoreboard() {
+        ScoreBoardRequest scoreBoardRequest = new ScoreBoardRequest();
+        sendMsg(scoreBoardRequest);
+    }
+
+    public void sendWin(UUID lobbyId, Player player) {
+        sendMsg(new WinMessage(lobbyId, player));
+    }
+
     public void handleRequest(Object object) {
         if (object instanceof JoinLobbyResponse joinLobbyResponse) {
         } else if (object instanceof ListLobbiesResponse listLobbiesResponse) {
@@ -87,6 +102,8 @@ public class Client {
             playState.makeMove(move.x, move.y);
         } else if (object instanceof ChatMessage chatMessage) {
             playState.addChatMSG(chatMessage.player.name, chatMessage.message);
+        } else if (object instanceof ScoreBoardResponse scoreBoardResponse) {
+            scoreboardState.refreshScores(scoreBoardResponse.scores);
         }
     }
 
