@@ -42,6 +42,7 @@ public class CreateLobby extends GameState {
         title.setFont(font);
         add(title, gbc);
 
+        Font font2 = new Font("Arial", Font.PLAIN, 20);
         gbc.weightx = 0.2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridwidth = 1;
@@ -85,15 +86,16 @@ public class CreateLobby extends GameState {
         gbc.ipady = 10;
         gbc.gridx = 1;
         gbc.gridy = 2;
-        JButton playButton = new JButton("Create");
-        playButton.addActionListener(e -> {
+        JButton create = new JButton("Create");
+        create.setFont(font2);
+        create.addActionListener(e -> {
             UUID uuid = UUID.randomUUID();
             client.createLobby(uuid, lobbyName.getText());
             LobbyState.loadLobby(new Lobby(lobbyName.getText(), uuid, 0, 2));
             gsm.setState(GameStateManager.State.LOBBY);
         });
 
-        add(playButton, gbc);
+        add(create, gbc);
 
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -105,6 +107,7 @@ public class CreateLobby extends GameState {
         gbc.gridx = 1;
         gbc.gridy = 3;
         JButton b3 = new JButton("Cancel");
+        b3.setFont(font2);
         b3.addActionListener(e -> {
             gsm.setState(GameStateManager.State.MULTIPLAYER);
 //            System.exit(1);

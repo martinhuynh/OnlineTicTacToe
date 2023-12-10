@@ -235,7 +235,7 @@ public class PlayState extends GameState {
         gbc.weighty = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.insets = new Insets(5, 0, 0, 0);
         gbc.ipadx = 0;
         gbc.ipady = 0;
         gbc.gridx = 0;
