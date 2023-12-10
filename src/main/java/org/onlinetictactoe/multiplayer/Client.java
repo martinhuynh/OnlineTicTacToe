@@ -96,7 +96,7 @@ public class Client {
             MultiplayerState.refreshLobbies();
         } else if (object instanceof StartGameMessage startGameMessage) {
             playState.setMark(startGameMessage.playerMark);
-            updateOpponentName(startGameMessage.opponentName + ": " + ((startGameMessage.playerMark == 'X') ? 'O' : 'X'));
+            updateOpponentName(startGameMessage.opponentName);
             startCountDown();
         } else if (object instanceof Move move) {
             playState.makeMove(move.x, move.y);
