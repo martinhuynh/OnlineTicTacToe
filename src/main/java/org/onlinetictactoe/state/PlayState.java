@@ -244,6 +244,7 @@ public class PlayState extends GameState {
             JScrollBar vertical = scrollPane.getVerticalScrollBar();
             addChatMSG(player.name, textField.getText());
             textField.setText("");
+
             vertical.setValue(vertical.getMaximum());
         });
         container.add(textField, gbc);
