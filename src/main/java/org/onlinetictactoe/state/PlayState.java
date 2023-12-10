@@ -120,7 +120,7 @@ public class PlayState extends GameState {
             squares.add(square);
             square.addActionListener(e -> {
                 if (!makeMove(square)) return;
-                client.move(LobbyState.lobby.lobbyId, square.getPosX(), square.getPosY());
+                client.move(LobbyState.lobby.lobbyId, square.getPosX(), square.getPosY(), player);
             });
             square.setFont(new Font("Arial", Font.BOLD, 100));
             square.setBackground(Color.WHITE);
@@ -248,7 +248,7 @@ public class PlayState extends GameState {
                 return;
             }
             addChatMSG(player.name, textField.getText());
-            client.sendChatMessage(LobbyState.lobby.lobbyId, textField.getText());
+            client.sendChatMessage(LobbyState.lobby.lobbyId, textField.getText(), player);
             textField.setText("");
         });
         container.add(textField, gbc);

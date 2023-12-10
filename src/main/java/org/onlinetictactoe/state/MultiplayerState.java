@@ -23,7 +23,7 @@ public class MultiplayerState extends GameState {
         new Thread(() -> {
             while (true) {
                 try {
-                    client.listLobbies();
+                    client.listLobbies(player);
                     refreshLobbies();
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

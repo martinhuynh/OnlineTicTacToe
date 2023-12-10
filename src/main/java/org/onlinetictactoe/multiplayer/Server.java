@@ -8,14 +8,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.Random;
 
 public class Server {
     ArrayList<ServerPlayer> clients;
+
+    ConcurrentHashMap<String, Integer> scoreBoard;
 
     public class ServerLobby {
         public ServerPlayer currentMove;
@@ -169,6 +168,20 @@ public class Server {
                 player.outputStream.writeObject(chatMessage);
                 player.outputStream.flush();
             }
+        } else if (request instanceof WinMessage winMessage) {
+            String name = winMessage.player.name;
+            if (scoreBoard.containsKey(name)) {
+                scoreBoard.put(name, scoreBoard.get(name) + 1);
+                return;
+            }
+            scoreBoard.put(name, 1);
+        } else if (request instanceof ScoreBoardRequest) {
+            TreeMap<Integer, String> treeMap = new TreeMap<>();
+            for (Map.Entry<String, Integer> entry: scoreBoard.entrySet()) {
+                treeMap.put(entry.getValue(), entry.getKey());
+            }
+            client.outputStream.writeObject(treeMap);
+            client.outputStream.flush();
         }
     }
 

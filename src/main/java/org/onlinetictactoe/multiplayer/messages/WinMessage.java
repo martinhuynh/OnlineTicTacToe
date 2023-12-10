@@ -10,5 +10,4 @@ public class WinMessage implements Serializable {
     public WinMessage(Player player) {
         this.player = player;
     }
-
 }

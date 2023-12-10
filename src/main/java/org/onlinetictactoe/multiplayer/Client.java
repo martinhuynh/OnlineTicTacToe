@@ -21,15 +21,13 @@ public class Client {
 
     private ObjectInputStream inputStream;
 
-    private Player player;
     private PlayState playState;
 
-    public Client(String serverIp, int serverPort, Player player) {
+    public Client(String serverIp, int serverPort) {
         try {
             this.serverSocket = new Socket(serverIp, serverPort);
             this.outputStream = new ObjectOutputStream(serverSocket.getOutputStream());
             this.inputStream = new ObjectInputStream(serverSocket.getInputStream());
-            this.player = player;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,32 +45,32 @@ public class Client {
         this.playState = playState;
     }
 
-    public void joinLobby(UUID lobbyId) {
+    public void joinLobby(UUID lobbyId, Player player) {
         JoinLobbyRequest joinLobbyRequest = new JoinLobbyRequest(lobbyId, player);
         sendMsg(joinLobbyRequest);
     }
 
-    public void listLobbies() {
+    public void listLobbies(Player player) {
         ListLobbiesRequest listLobbiesRequest = new ListLobbiesRequest(player);
         sendMsg(listLobbiesRequest);
     }
 
-    public void createLobby(UUID lobbyId, String lobbyName) {
+    public void createLobby(UUID lobbyId, String lobbyName, Player player) {
         CreateLobbyRequest createLobbyRequest = new CreateLobbyRequest(lobbyName, lobbyId, 2, player);
         sendMsg(createLobbyRequest);
     }
 
-    public void move(UUID lobbyId, int x, int y) {
+    public void move(UUID lobbyId, int x, int y, Player player) {
         Move moveRequest = new Move(lobbyId, x, y, player);
         sendMsg(moveRequest);
     }
 
-    public void sendChatMessage(UUID lobbyId, String message) {
+    public void sendChatMessage(UUID lobbyId, String message, Player player) {
         ChatMessage chatMessage = new ChatMessage(lobbyId, message, player);
         sendMsg(chatMessage);
     }
 
-    public void quit(UUID lobbyId) {
+    public void quit(UUID lobbyId, Player player) {
         sendMsg(new QuitMessage(lobbyId, player));
     }
 

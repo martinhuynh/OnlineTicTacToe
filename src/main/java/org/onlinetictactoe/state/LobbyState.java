@@ -17,7 +17,7 @@ public class LobbyState extends GameState {
     public static void loadLobby(Lobby lobby) {
         LobbyState.lobby = lobby;
         title.setText("Lobby Name: " + lobby.lobbyName);
-        client.joinLobby(lobby.lobbyId);
+        client.joinLobby(lobby.lobbyId, player);
     }
 
     public static void updateOpponentName(String name) {
@@ -141,7 +141,7 @@ public class LobbyState extends GameState {
     @Override
     public void escape() {
         gsm.setState(GameStateManager.State.MULTIPLAYER);
-        client.quit(lobby.lobbyId);
+        client.quit(lobby.lobbyId, player);
     }
 
     @Override
