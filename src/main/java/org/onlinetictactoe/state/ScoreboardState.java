@@ -2,6 +2,9 @@ package org.onlinetictactoe.state;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ScoreboardState extends GameState {
     private JPanel innerContainer = new JPanel();
@@ -82,6 +85,9 @@ public class ScoreboardState extends GameState {
         gbc.insets = new Insets(0, 0, 60, 0);
         gbc.anchor = GridBagConstraints.WEST;
         JButton refresh = new JButton("Refresh");
+        refresh.addActionListener((e) -> {
+            refreshScores();
+        });
         refresh.setFont(font2);
         add(refresh, gbc);
 
@@ -115,7 +121,7 @@ public class ScoreboardState extends GameState {
     }
 
     private void refreshScores() {
-        // request server for scores
+        TreeMap<Integer, ArrayList<String>> scores = new TreeMap<>();
         innerContainer.removeAll();
         innerContainer.revalidate();
         GridBagLayout layout = new GridBagLayout();
@@ -128,11 +134,15 @@ public class ScoreboardState extends GameState {
         gbc.ipady = 0;
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        for(int i = 0; i < 10; i++) {
-            gbc.gridx = 0;
-            gbc.gridy = i;
-            JPanel container = createScorePanel("Test", 10);
-            innerContainer.add(container, gbc);
+
+        int count = 0;
+        for(Map.Entry<Integer, ArrayList<String>> entry : scores.entrySet()) {
+            for (String s : entry.getValue()) {
+                gbc.gridx = 0;
+                gbc.gridy = count++;
+                JPanel container = createScorePanel(s, entry.getKey());
+                innerContainer.add(container, gbc);
+            }
         }
         innerContainer.revalidate();
     }
