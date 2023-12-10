@@ -241,6 +241,9 @@ public class PlayState extends GameState {
         JTextField textField = new JTextField();
         textField.setFont(new Font("Arial", Font.PLAIN, 15));
         textField.addActionListener((e) -> {
+            if (textField.getText().isBlank()) {
+                return;
+            }
             JScrollBar vertical = scrollPane.getVerticalScrollBar();
             addChatMSG(player.name, textField.getText());
             client.sendChatMessage(LobbyState.lobby.lobbyId, textField.getText());

@@ -90,7 +90,6 @@ public class Client {
         } else if (object instanceof ChatMessage chatMessage) {
             playState.addChatMSG(chatMessage.player.name, chatMessage.message);
         }
-
     }
 
     public void start() {
