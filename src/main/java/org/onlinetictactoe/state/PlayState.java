@@ -4,6 +4,7 @@ import org.onlinetictactoe.game.TicTacToe;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -15,6 +16,7 @@ public class PlayState extends GameState {
     private boolean pause = false;
     private JPanel board;
     private boolean highlightMe = true;
+    private JTextArea textArea;
 
     public char mark;
 
@@ -22,11 +24,15 @@ public class PlayState extends GameState {
         super(gsm);
         pauseState = new PauseState(gsm);
         ticTacToe = new TicTacToe();
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
         client.setPlayState(this);
         squares = new ArrayList<>();
         initGrid();
         setup();
         player1.setText(player.name);
+
     }
 
     public void reset() {
@@ -133,7 +139,7 @@ public class PlayState extends GameState {
         setLayout(layout);
 
         gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.weightx = 0.8;
+        gbc.weightx = 0.6;
 //        gbc.weighty = 0.5;
         gbc.gridwidth = 1;
         gbc.gridheight = 3;
@@ -181,9 +187,9 @@ public class PlayState extends GameState {
         gbc.gridy = 1;
         add(board, gbc);
 
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.weightx = 0.8;
-//        gbc.weighty = 0.5;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 0.5;
+        gbc.weighty = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 3;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -191,7 +197,55 @@ public class PlayState extends GameState {
         gbc.ipady = 0;
         gbc.gridx = 3;
         gbc.gridy = 0;
-        add(new JLabel(""), gbc);
+//        add(new JLabel(""), gbc);
+        add(createChatPanel(), gbc);
+    }
+
+    public void addChatMSG(String user, String msg) {
+        textArea.append(user + ": " + msg + "\n");
+    }
+
+    private JPanel createChatPanel() {
+        JPanel container = new JPanel();
+        container.setBackground(Color.lightGray);
+        container.setBorder(new EmptyBorder(10, 20, 10, 20));
+        GridBagLayout layout = new GridBagLayout();
+        container.setLayout(layout);
+        GridBagConstraints gbc = new GridBagConstraints();
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setColumns(2);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        container.add(scrollPane, gbc);
+
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JTextField textField = new JTextField();
+        textField.setFont(new Font("Arial", Font.PLAIN, 15));
+        textField.addActionListener((e) -> {
+            addChatMSG(player.name, textField.getText());
+            textField.setText("");
+        });
+        container.add(textField, gbc);
+        return container;
     }
 
 

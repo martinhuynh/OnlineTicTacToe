@@ -69,6 +69,22 @@ public class MenuState extends GameState {
         });
         add(b3, gbc);
 
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.ipadx = 10;
+        gbc.ipady = 10;
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        JButton b4 = new JButton("Test");
+        b4.addActionListener(e -> {
+            gsm.setState(GameStateManager.State.PLAY);
+//            System.exit(1);
+        });
+        add(b4, gbc);
+
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.weightx = 0.8;
 //        gbc.weighty = 0.5;
