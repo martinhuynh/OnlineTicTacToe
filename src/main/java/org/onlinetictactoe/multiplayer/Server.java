@@ -65,6 +65,7 @@ public class Server {
         } catch (IOException | ClassNotFoundException e) {
             this.scoreBoard = new ConcurrentHashMap<>();
         }
+
     }
 
     private void createLobby(UUID id, String lobbyName, int maxPlayers) {
