@@ -94,7 +94,7 @@ public class PlayState extends GameState {
             toggleBoard(false);
         }
         if (ticTacToe.checkForWin()) {
-            client.sendWin(LobbyState.lobby.lobbyId, player);
+            if (ticTacToe.getWinner() == mark) client.sendWin(LobbyState.lobby.lobbyId, player);
             for (GameSquare s : squares) {
                 if (ticTacToe.winningSquare(s.getPosX(), s.getPosY())) {
                     s.setBackground(Color.YELLOW);

@@ -4,6 +4,7 @@ public class TicTacToe {
     private char[][] board;
     private char currentPlayerMark;
     private static final int SIZE = 3;
+    private char winner;
 
     public TicTacToe() {
         board = new char[SIZE][SIZE];
@@ -87,17 +88,27 @@ public class TicTacToe {
 
     private boolean checkDiagonalsForWin() {
         if (checkRowCol(board[0][0], board[1][1], board[2][2])) {
+            winner = board[0][0];
             board[0][0] = board[1][1] = board[2][2] = 'W';
             return true;
         }
         if (checkRowCol(board[0][2], board[1][1], board[2][0])) {
+            winner = board[0][2];
             board[0][2] = board[1][1] = board[2][0] = 'W';
             return true;
         }
         return false;
     }
 
+    public char getWinner() {
+        return winner;
+    }
+
     private boolean checkRowCol(char c1, char c2, char c3) {
-        return ((c1 != '-') && (c1 == c2) && (c2 == c3));
+        if (((c1 != '-') && (c1 == c2) && (c2 == c3))) {
+            winner = c1;
+            return true;
+        }
+        return false;
     }
 }
