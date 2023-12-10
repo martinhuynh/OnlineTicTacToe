@@ -67,6 +67,11 @@ public class Client {
         sendMsg(moveRequest);
     }
 
+    public void sendChatMessage(UUID lobbyId, String message) {
+        ChatMessage chatMessage = new ChatMessage(lobbyId, message, player);
+        sendMsg(chatMessage);
+    }
+
     public void quit(UUID lobbyId) {
         sendMsg(new QuitMessage(lobbyId, player));
     }

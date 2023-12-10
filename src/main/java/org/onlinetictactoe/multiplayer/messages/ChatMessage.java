@@ -11,7 +11,7 @@ public class ChatMessage implements Serializable {
 
     public Player player;
 
-    ChatMessage(UUID lobbyId, String message, Player player) {
+    public ChatMessage(UUID lobbyId, String message, Player player) {
         this.lobbyId = lobbyId;
         this.message = message;
         this.player = player;
