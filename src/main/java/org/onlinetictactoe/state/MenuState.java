@@ -1,11 +1,14 @@
 package org.onlinetictactoe.state;
 
+import org.onlinetictactoe.player.Player;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.UUID;
 
 public class MenuState extends GameState {
     public MenuState(GameStateManager gsm) {
@@ -162,7 +165,7 @@ public class MenuState extends GameState {
             b4.setEnabled(false);
             usernameField.setEnabled(false);
             playButton.setEnabled(true);
-            player.name = usernameField.getText();
+            player = new Player(usernameField.getText(), UUID.randomUUID());
         });
         add(b4, gbc);
 

@@ -32,8 +32,6 @@ public class PlayState extends GameState {
         squares = new ArrayList<>();
         initGrid();
         setup();
-        player1.setText(player.name);
-
     }
 
     public void reset() {
@@ -272,5 +270,6 @@ public class PlayState extends GameState {
     @Override
     public void update() {
         pause = false;
+        player1.setText(player.name);
     }
 }
