@@ -1,5 +1,6 @@
 package org.onlinetictactoe;
 
+import org.onlinetictactoe.multiplayer.Server;
 import org.onlinetictactoe.state.GameStateManager;
 
 import java.awt.*;
@@ -38,7 +39,20 @@ public class Main extends JFrame {
         requestFocus();
     }
 
+    public static String ipAddress;
+    public static int port;
+
     public static void main(String[] args) {
-        Main game = new Main();
+        if (args.length == 0 || args.length > 3) {
+            System.err.println("Invalid arguments. Require 'client ipAddress port' or 'server port'");
+            return;
+        }
+        if (args[0].equalsIgnoreCase("server")) {
+            new Server(Integer.parseInt(args[1])).start();
+        } else {
+            ipAddress = args[1];
+            port = Integer.parseInt(args[2]);
+            Main game = new Main();
+        }
     }
 }

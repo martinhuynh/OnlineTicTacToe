@@ -13,6 +13,7 @@ public class Server {
     ArrayList<ServerPlayer> clients;
 
     ConcurrentHashMap<String, Integer> scoreBoard;
+    int port;
 
     public class ServerLobby {
         public ServerPlayer currentMove;
@@ -51,6 +52,7 @@ public class Server {
     ConcurrentHashMap<UUID, ServerLobby> lobbies;
 
     public Server(int port) {
+        this.port = port;
         lobbies = new ConcurrentHashMap<>();
         clients = new ArrayList<>();
         try {
@@ -200,6 +202,7 @@ public class Server {
     }
 
     public void start() {
+        System.out.println("Starting server on port " + port);
         try {
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -221,7 +224,7 @@ public class Server {
                             if (object != null) handleRequest(object, serverPlayer);
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
                     }
 
                     UUID lobbyToRemove = null;
@@ -244,12 +247,13 @@ public class Server {
                 }).start();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        Server server = new Server(4001);
+        int port = 4001;
+        Server server = new Server(port);
 //        server.createLobby(UUID.randomUUID(), "Lobby 1", 2);
 //        server.createLobby(UUID.randomUUID(), "Lobby 2", 2);
 //        server.createLobby(UUID.randomUUID(), "Lobby 3", 2);

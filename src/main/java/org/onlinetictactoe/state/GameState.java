@@ -1,6 +1,7 @@
 package org.onlinetictactoe.state;
 
 
+import org.onlinetictactoe.Main;
 import org.onlinetictactoe.multiplayer.Client;
 import org.onlinetictactoe.player.Player;
 
@@ -17,7 +18,7 @@ public abstract class GameState extends JPanel {
     public GameState(GameStateManager gsm) {
         if (gsm != null) this.gsm = gsm;
         if (client == null) {
-            client = new Client("localhost", 4001);
+            client = new Client(Main.ipAddress, Main.port);
             client.start();
         }
         setupFocusable();
